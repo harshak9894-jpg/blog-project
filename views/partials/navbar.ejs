@@ -1,0 +1,45 @@
+<div class="app-navbar">
+  <nav class="navbar-shell">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+      <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
+        <a class="navbar-brand d-flex align-items-center text-decoration-none" href="/">
+          <span class="brand-mark">D</span>
+          Delulu
+        </a>
+
+        <div class="nav-pills-row">
+          <a href="/" class="nav-link-chip">Home</a>
+          <% if (user) { %>
+            <a href="/inbox" class="nav-link-chip">Inbox</a>
+            <a href="/profile/<%= user %>" class="nav-link-chip">Profile</a>
+            <a href="/create" class="nav-link-chip">Create</a>
+            <a href="/settings" class="nav-link-chip">Settings</a>
+            <a href="/notifications" class="nav-link-chip">
+              Notifications
+              <% if (unreadNotificationsCount > 0) { %>
+                <span class="nav-counter"><%= unreadNotificationsCount %></span>
+              <% } %>
+            </a>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
+        <form action="/" method="GET" class="nav-search">
+          <input type="text"
+                 name="search"
+                 value="<%= search || '' %>"
+                 class="form-control form-control-sm"
+                 placeholder="Search posts, tags, ideas">
+          <button class="btn btn-sm" type="submit">Search</button>
+        </form>
+
+        <div class="nav-actions-row">
+          <% if (!user) { %>
+            <a href="/login" class="action-chip primary">Login</a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>

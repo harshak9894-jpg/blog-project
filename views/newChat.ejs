@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>New Chat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/style.css" rel="stylesheet">
+</head>
+<body class="app-body <%= user ? 'sidebar-expanded' : '' %>">
+
+<% if (user) { %>
+  <%- include("partials/sidebar") %>
+<% } else { %>
+  <%- include("partials/navbar") %>
+<% } %>
+
+<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %>">
+  <% if (success.length > 0) { %>
+    <div class="alert alert-success"><%= success %></div>
+  <% } %>
+  <% if (error.length > 0) { %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+
+  <section class="hero-card">
+    <span class="eyebrow">Start Messaging</span>
+    <h1 class="display-title mt-3 mb-2">Open a direct or group chat.</h1>
+    <p class="hero-subtitle mb-0">Anyone can reach anyone in Delulu if the receiver allows new messages, which keeps the inbox more flexible and more private at the same time.</p>
+  </section>
+
+  <section class="chat-directory-grid">
+    <section class="content-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h3 class="mb-1">Direct Chats</h3>
+          <p class="meta-text mb-0">Browse members and start a conversation instantly.</p>
+        </div>
+        <span class="badge-soft"><%= directoryUsers.length %> users</span>
+      </div>
+
+      <% if (directoryUsers.length === 0) { %>
+        <div class="empty-state">No other users are available yet.</div>
+      <% } %>
+
+      <div class="chat-directory-list">
+        <% directoryUsers.forEach(person => { %>
+          <form action="/inbox/start/<%= person._id %>" method="POST" class="chat-directory-item">
+            <div class="d-flex align-items-center gap-3">
+              <img src="<%= person.profilePic %>?v=<%= Date.now() %>" alt="Profile picture" class="avatar-sm">
+              <div>
+                <p class="fw-semibold mb-0"><%= person.displayName || person.username %></p>
+                <p class="meta-text mb-0">@<%= person.handle || person.username %></p>
+              </div>
+            </div>
+
+            <% const dmPolicy = person.allowMessages === "everyone"
+              ? "Open"
+              : person.allowMessages === "followers"
+                ? "Followers only"
+                : "Closed"; %>
+            <div class="d-flex align-items-center gap-2">
+              <span class="meta-text"><%= dmPolicy %></span>
+              <button type="submit" class="btn btn-accent" <%= person.canStartChat ? "" : "disabled" %>>
+                <%= person.canStartChat ? "Message" : "Unavailable" %>
+              </button>
+            </div>
+          </form>
+        <% }) %>
+      </div>
+    </section>
+
+    <section class="content-card">
+      <h3 class="mb-3">Create Group Chat</h3>
+      <form action="/inbox/group" method="POST">
+        <div class="mb-3">
+          <label class="form-label">Group Title</label>
+          <input type="text" name="title" class="form-control" placeholder="Weekend Crew, Project Team, Closest Friends" required>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Choose at least 2 people</label>
+          <div class="group-picker-list">
+            <% directoryUsers.forEach(person => { %>
+              <label class="group-picker-item <%= person.canStartChat ? '' : 'is-disabled' %>">
+                <input type="checkbox" name="participants" value="<%= person._id %>" <%= person.canStartChat ? "" : "disabled" %>>
+                <span><%= person.displayName || person.username %> (@<%= person.handle || person.username %>)</span>
+                <small class="meta-text ms-auto"><%= person.canStartChat ? "Can join" : "Unavailable" %></small>
+              </label>
+            <% }) %>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button type="submit" class="btn btn-brand">Create Group</button>
+          <a href="/inbox" class="btn btn-ghost text-decoration-none">Back to Inbox</a>
+        </div>
+      </form>
+    </section>
+  </section>
+</main>
+
+</body>
+</html>

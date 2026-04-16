@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Notifications</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/style.css" rel="stylesheet">
+</head>
+<body class="app-body <%= user ? 'sidebar-expanded' : '' %>">
+
+<% if (user) { %>
+  <%- include("partials/sidebar") %>
+<% } else { %>
+  <%- include("partials/navbar") %>
+<% } %>
+
+<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %>">
+  <% if (success.length > 0) { %>
+    <div class="alert alert-success"><%= success %></div>
+  <% } %>
+
+  <% if (error.length > 0) { %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+
+  <section class="hero-card">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3">
+      <div>
+        <span class="eyebrow">Activity</span>
+        <h1 class="display-title mt-3 mb-2">Your notifications</h1>
+        <p class="hero-subtitle mb-0">Track follows, likes, comments, and saves in one stream.</p>
+      </div>
+      <form action="/notifications/read-all" method="POST">
+        <button class="btn btn-brand" type="submit">Mark All Read</button>
+      </form>
+    </div>
+  </section>
+
+  <% if (notifications.length === 0) { %>
+    <div class="empty-state">You have no notifications yet.</div>
+  <% } %>
+
+  <% notifications.forEach(notification => { %>
+    <article class="content-card mb-3 <%= notification.read ? '' : 'notification-unread' %>">
+      <div class="d-flex flex-column flex-lg-row justify-content-between gap-2">
+        <div>
+          <p class="mb-1 fw-semibold"><%= notification.message %></p>
+          <p class="meta-text mb-0"><%= new Date(notification.createdAt).toLocaleString() %></p>
+        </div>
+        <% if (notification.post) { %>
+          <a href="/post/<%= notification.post._id %>" class="btn btn-ghost text-decoration-none align-self-start">View Post</a>
+        <% } %>
+      </div>
+    </article>
+  <% }) %>
+</main>
+
+</body>
+</html>

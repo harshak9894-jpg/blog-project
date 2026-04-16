@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Profile</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/style.css" rel="stylesheet">
+</head>
+<body class="app-body <%= user ? 'sidebar-expanded' : '' %>">
+
+<% if (user) { %>
+  <%- include("partials/sidebar") %>
+<% } else { %>
+  <%- include("partials/navbar") %>
+<% } %>
+
+<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %>">
+  <% if (success.length > 0) { %>
+    <div class="alert alert-success"><%= success %></div>
+  <% } %>
+
+  <% if (error.length > 0) { %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+
+  <section class="content-card mb-4">
+    <h2 class="h5 mb-3">Profile picture</h2>
+    <form action="/upload-dp" method="POST" enctype="multipart/form-data">
+      <label class="form-label">Upload image</label>
+      <input type="file" name="profilePic" class="form-control mb-3" accept="image/jpeg,image/png,image/jpg" required>
+      <p class="meta-text mb-3">JPG or PNG, up to 5 MB. Use the section below to update name, handle, and other details without changing your photo.</p>
+      <button class="btn btn-soft" type="submit">Update picture</button>
+    </form>
+  </section>
+
+  <section class="content-card">
+    <h2 class="h5 mb-3">Profile details</h2>
+    <form action="/edit-profile" method="POST">
+      <div class="row">
+        <div class="col-lg-6 mb-3">
+          <label class="form-label">Display name</label>
+          <input type="text" name="displayName" class="form-control" value="<%= currentUser.displayName || '' %>" maxlength="50" required>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label">Username</label>
+          <input type="text" name="username" class="form-control" value="<%= currentUser.username %>" minlength="3" maxlength="30" required>
+          <p class="meta-text mt-2 mb-0">Sign-in uses your email; username is your public id on the site.</p>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Handle</label>
+        <input type="text" name="handle" class="form-control" value="<%= currentUser.handle || '' %>" maxlength="30" required>
+        <p class="meta-text mt-2 mb-0">Letters, numbers, and underscores. Shown as @handle.</p>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Bio</label>
+        <textarea name="bio" class="form-control" rows="4" maxlength="160"><%= currentUser.bio || '' %></textarea>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Who can message you</label>
+        <select name="allowMessages" class="form-select">
+          <option value="everyone" <%= currentUser.allowMessages === "everyone" ? "selected" : "" %>>Everyone</option>
+          <option value="followers" <%= currentUser.allowMessages === "followers" ? "selected" : "" %>>Only followers</option>
+          <option value="nobody" <%= currentUser.allowMessages === "nobody" ? "selected" : "" %>>Nobody</option>
+        </select>
+        <p class="meta-text mt-2 mb-0">Controls who can start a new direct chat or include you in a new group.</p>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-brand" type="submit">Save profile</button>
+        <a href="/profile/<%= currentUser._id %>" class="btn btn-ghost text-decoration-none">Back to profile</a>
+      </div>
+    </form>
+  </section>
+</main>
+
+</body>
+</html>

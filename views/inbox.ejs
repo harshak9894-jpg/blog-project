@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Inbox</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/style.css" rel="stylesheet">
+</head>
+<body class="app-body chat-page-body sidebar-expanded">
+
+<%- include("partials/sidebar") %>
+
+<main class="chat-page-wrap chat-page-wrap-with-sidebar">
+  <section class="chat-shell"
+           id="chat-app"
+           data-user-id="<%= user || '' %>"
+           data-selected-conversation-id="<%= selectedConversation ? selectedConversation._id : '' %>"
+           data-selected-other-user-id="<%= selectedConversation && selectedConversation.otherParticipant ? selectedConversation.otherParticipant._id : '' %>">
+
+    <aside class="chat-sidebar chat-sidebar-rich">
+      <div class="chat-sidebar-top chat-sidebar-head">
+        <div>
+          <p class="chat-sidebar-kicker mb-1">Inbox</p>
+          <h2 class="chat-sidebar-title mb-0">Messages</h2>
+        </div>
+        <a href="/inbox/new" class="chat-new-btn" aria-label="Start new chat">&#9998;</a>
+      </div>
+
+      <div class="chat-search-wrap chat-search-wrap-rich">
+        <span class="chat-search-icon">&#128269;</span>
+        <input type="text" id="chat-search" class="form-control chat-search-input" placeholder="Search users or chats">
+      </div>
+
+      <div class="chat-sidebar-list" id="conversation-list">
+        <% if (conversations.length === 0) { %>
+          <div class="empty-state">No conversations yet. Start a direct message or create a private group.</div>
+        <% } %>
+
+        <% conversations.forEach(conversation => { %>
+          <% const avatar = conversation.isGroup ? "/uploads/default.png" : (conversation.otherParticipant?.profilePic || "/uploads/default.png"); %>
+          <% const previewTime = conversation.lastMessageAt ? new Date(conversation.lastMessageAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : ""; %>
+          <a href="/inbox/<%= conversation._id %>"
+             class="chat-list-link conversation-link"
+             data-conversation-id="<%= conversation._id %>"
+             data-search-text="<%= `${conversation.title} ${(conversation.otherParticipant?.handle || '')}`.toLowerCase() %>"
+             data-direct-user-id="<%= conversation.isGroup || !conversation.otherParticipant ? '' : conversation.otherParticipant._id %>">
+            <div class="chat-list-item <%= conversation.selected ? 'is-active' : '' %> <%= conversation.isFavorite ? 'is-favorite' : '' %>">
+              <div class="chat-avatar-wrap">
+                <img src="<%= avatar %>?v=<%= Date.now() %>" alt="Conversation avatar" class="avatar-md chat-list-avatar">
+                <% if (!conversation.isGroup && conversation.otherParticipant) { %>
+                  <span class="presence-dot <%= conversation.isBlocked ? 'is-offline' : '' %>" data-presence-user-id="<%= conversation.otherParticipant._id %>"></span>
+                <% } %>
+              </div>
+              <div class="chat-list-copy">
+                <div class="chat-list-head">
+                  <p class="chat-list-name"><%= conversation.title %></p>
+                  <span class="chat-list-time" data-conversation-time="<%= conversation._id %>"><%= previewTime %></span>
+                </div>
+                <div class="chat-list-meta">
+                  <div class="chat-list-badges">
+                    <% if (conversation.isFavorite) { %>
+                      <span class="chat-chip star">&#9733;</span>
+                    <% } %>
+                    <% if (conversation.isPendingForViewer) { %>
+                      <span class="chat-chip request">Request</span>
+                    <% } %>
+                  </div>
+                  <% if (conversation.unreadCount > 0) { %>
+                    <span class="chat-unread-badge" data-conversation-unread="<%= conversation._id %>"><%= conversation.unreadCount %></span>
+                  <% } else { %>
+                    <span class="chat-unread-badge is-hidden" data-conversation-unread="<%= conversation._id %>">0</span>
+                  <% } %>
+                </div>
+                <p class="chat-list-preview conversation-preview" data-conversation-preview="<%= conversation._id %>"><%= conversation.lastMessageText %></p>
+              </div>
+            </div>
+          </a>
+        <% }) %>
+      </div>
+    </aside>
+
+    <section class="chat-stage chat-stage-rich">
+      <% if (!selectedConversation) { %>
+        <div class="chat-stage-empty">
+          <div class="empty-state">Select a conversation on the left to open your messages.</div>
+        </div>
+      <% } else { %>
+        <% const canManageDirectChat = !selectedConversation.isGroup && selectedConversation.otherParticipant; %>
+        <% const headerAvatar = selectedConversation.isGroup ? "/uploads/default.png" : (selectedConversation.otherParticipant?.profilePic || "/uploads/default.png"); %>
+        <% const isRequestRecipient = !selectedConversation.isGroup && selectedConversation.status === "pending" && selectedConversation.requestedById !== user.toString(); %>
+
+        <header class="chat-stage-header chat-stage-header-rich">
+          <div class="chat-stage-identity">
+            <div class="chat-avatar-wrap">
+              <img src="<%= headerAvatar %>?v=<%= Date.now() %>" alt="Conversation avatar" class="avatar-md">
+              <% if (canManageDirectChat) { %>
+                <span class="presence-dot header-presence-dot <%= selectedConversation.isBlocked ? 'is-offline' : '' %>" id="selected-presence-dot" data-presence-user-id="<%= selectedConversation.otherParticipant._id %>"></span>
+              <% } %>
+            </div>
+            <div>
+              <p class="chat-stage-name mb-0"><%= selectedConversation.title %></p>
+              <p class="meta-text mb-0" id="chat-status-text">
+                <%= selectedConversation.isGroup ? `${selectedConversation.participants.length} people in this room` : (selectedConversation.status === "pending" ? "Message request" : (selectedConversation.isBlocked ? "Blocked conversation" : "Offline")) %>
+              </p>
+            </div>
+          </div>
+
+          <div class="chat-header-actions">
+            <% if (selectedConversation.isFavorite) { %>
+              <span class="chat-chip star">&#9733; Favourite</span>
+            <% } %>
+
+            <% if (canManageDirectChat) { %>
+              <div class="chat-menu-wrap">
+                <button type="button" class="chat-menu-toggle" id="chat-menu-toggle" aria-label="Chat options">&#8942;</button>
+                <div class="chat-menu-panel" id="chat-menu-panel">
+                  <form action="/inbox/<%= selectedConversation._id %>/block" method="POST">
+                    <button type="submit" class="chat-menu-item">
+                      <span>&#128683;</span>
+                      Block
+                    </button>
+                  </form>
+                  <form action="/inbox/<%= selectedConversation._id %>/favorite" method="POST">
+                    <button type="submit" class="chat-menu-item">
+                      <span>&#9733;</span>
+                      <%= selectedConversation.isFavorite ? "Unfavourite" : "Favourite" %>
+                    </button>
+                  </form>
+                  <form action="/inbox/<%= selectedConversation._id %>/clear" method="POST">
+                    <button type="submit" class="chat-menu-item danger" onclick="return confirm('Clear this chat only from your inbox?');">
+                      <span>&#128465;</span>
+                      Clear Chat
+                    </button>
+                  </form>
+                </div>
+              </div>
+            <% } %>
+          </div>
+        </header>
+
+        <% if (isRequestRecipient) { %>
+          <div class="request-banner">
+            <div>
+              <strong class="d-block mb-1">New message request</strong>
+              <span class="meta-text">Accept this request before replying to the chat.</span>
+            </div>
+            <div class="action-row">
+              <form action="/inbox/<%= selectedConversation._id %>/accept" method="POST">
+                <button type="submit" class="btn btn-brand">Accept</button>
+              </form>
+              <form action="/inbox/<%= selectedConversation._id %>/decline" method="POST">
+                <button type="submit" class="btn btn-ghost">Decline</button>
+              </form>
+            </div>
+          </div>
+        <% } else if (selectedConversation.status === "pending") { %>
+          <div class="request-banner soft">
+            <div>
+              <strong class="d-block mb-1">Waiting for approval</strong>
+              <span class="meta-text">Your first messages are visible. The other person needs to accept before replying.</span>
+            </div>
+          </div>
+        <% } %>
+
+        <div class="chat-stage-body" id="message-thread">
+          <% if (selectedConversation.messages.length === 0) { %>
+            <div class="empty-state" id="empty-message-state">No visible messages in this chat yet.</div>
+          <% } %>
+
+          <% selectedConversation.messages.forEach(message => { %>
+            <div class="message-row <%= message.sender && message.sender._id.toString() === user.toString() ? 'own' : '' %>">
+              <div class="message-bubble <%= message.sender && message.sender._id.toString() === user.toString() ? 'own' : '' %>">
+                <p class="mb-1 fw-semibold"><%= message.sender ? (message.sender.displayName || message.sender.username) : "Unknown" %></p>
+                <p class="mb-1"><%= message.text %></p>
+                <small class="meta-text"><%= new Date(message.createdAt).toLocaleString() %></small>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+
+        <% if (selectedConversation.canSend) { %>
+          <form id="chat-form" action="/inbox/<%= selectedConversation._id %>/message" method="POST" class="chat-stage-composer">
+            <div class="chat-typing-indicator" id="chat-typing-indicator"></div>
+            <div class="chat-composer-panel chat-composer-panel-rich">
+              <button type="button" class="chat-composer-icon" disabled aria-label="Attach">&#128206;</button>
+              <input type="text" id="chat-input" name="text" class="form-control chat-input-field" placeholder="Type a message" required>
+              <button type="submit" class="chat-send-btn" aria-label="Send">&#10148;</button>
+            </div>
+          </form>
+        <% } else { %>
+          <div class="chat-stage-composer">
+            <div class="chat-composer-panel chat-composer-panel-rich is-disabled">
+              <button type="button" class="chat-composer-icon" disabled aria-label="Attach">&#128206;</button>
+              <input type="text" class="form-control chat-input-field" value="<%= selectedConversation.isBlocked ? 'This chat is blocked.' : 'Accept this request to reply.' %>" disabled>
+              <button type="button" class="chat-send-btn" disabled aria-label="Send">&#10148;</button>
+            </div>
+          </div>
+        <% } %>
+      <% } %>
+    </section>
+  </section>
+</main>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+(function () {
+  const app = document.getElementById("chat-app");
+  if (!app) return;
+
+  const currentUserId = app.dataset.userId;
+  const selectedConversationId = app.dataset.selectedConversationId;
+  const selectedOtherUserId = app.dataset.selectedOtherUserId;
+  const searchInput = document.getElementById("chat-search");
+  const menuToggle = document.getElementById("chat-menu-toggle");
+  const menuPanel = document.getElementById("chat-menu-panel");
+
+  if (searchInput) {
+    searchInput.addEventListener("input", function () {
+      const value = this.value.trim().toLowerCase();
+      document.querySelectorAll(".chat-list-link").forEach(function (link) {
+        const haystack = link.dataset.searchText || "";
+        link.style.display = !value || haystack.includes(value) ? "" : "none";
+      });
+    });
+  }
+
+  if (menuToggle && menuPanel) {
+    menuToggle.addEventListener("click", function () {
+      menuPanel.classList.toggle("is-open");
+    });
+  }
+
+  document.addEventListener("click", function (event) {
+    if (menuPanel && !event.target.closest(".chat-menu-wrap")) {
+      menuPanel.classList.remove("is-open");
+    }
+  });
+
+  if (!currentUserId) return;
+
+  const socket = io();
+  const onlineUsers = new Set();
+  const thread = document.getElementById("message-thread");
+  const form = document.getElementById("chat-form");
+  const input = document.getElementById("chat-input");
+  const emptyState = document.getElementById("empty-message-state");
+  const statusText = document.getElementById("chat-status-text");
+  const typingIndicator = document.getElementById("chat-typing-indicator");
+  let typingTimeout = null;
+
+  function setPresence(userId, isOnline) {
+    if (!userId) return;
+    document.querySelectorAll(`[data-presence-user-id='${userId}']`).forEach(function (dot) {
+      dot.classList.toggle("is-online", isOnline);
+      dot.classList.toggle("is-offline", !isOnline);
+    });
+
+    if (selectedOtherUserId && userId === selectedOtherUserId && statusText && !typingIndicator?.textContent) {
+      statusText.textContent = isOnline ? "Online now" : "Offline";
+    }
+  }
+
+  function updateUnreadBadge(conversationId, unreadCount) {
+    const badge = document.querySelector(`[data-conversation-unread='${conversationId}']`);
+    if (!badge) return;
+
+    if (!unreadCount) {
+      badge.textContent = "0";
+      badge.classList.add("is-hidden");
+      return;
+    }
+
+    badge.textContent = unreadCount;
+    badge.classList.remove("is-hidden");
+  }
+
+  function updateConversationPreview(conversation) {
+    const preview = document.querySelector(`[data-conversation-preview='${conversation.id}']`);
+    if (preview) {
+      preview.textContent = conversation.lastMessageText;
+    }
+
+    const time = document.querySelector(`[data-conversation-time='${conversation.id}']`);
+    if (time && conversation.lastMessageAt) {
+      time.textContent = new Date(conversation.lastMessageAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    }
+
+    updateUnreadBadge(conversation.id, conversation.id === selectedConversationId ? 0 : conversation.unreadCount);
+  }
+
+  function renderMessage(message) {
+    const row = document.createElement("div");
+    row.className = `message-row ${message.senderId === currentUserId ? "own" : ""}`;
+
+    const wrapper = document.createElement("div");
+    wrapper.className = `message-bubble ${message.senderId === currentUserId ? "own" : ""}`;
+    wrapper.innerHTML = `
+      <p class="mb-1 fw-semibold"></p>
+      <p class="mb-1"></p>
+      <small class="meta-text"></small>
+    `;
+    wrapper.querySelectorAll("p")[0].textContent = message.senderName;
+    wrapper.querySelectorAll("p")[1].textContent = message.text;
+    wrapper.querySelector("small").textContent = new Date(message.createdAt).toLocaleString();
+    row.appendChild(wrapper);
+
+    return row;
+  }
+
+  socket.on("presence:list", function (payload) {
+    (payload?.userIds || []).forEach(function (userId) {
+      onlineUsers.add(String(userId));
+      setPresence(String(userId), true);
+    });
+  });
+
+  socket.on("presence:update", function (payload) {
+    if (!payload?.userId) return;
+    const userId = String(payload.userId);
+    if (payload.online) {
+      onlineUsers.add(userId);
+    } else {
+      onlineUsers.delete(userId);
+    }
+    setPresence(userId, payload.online);
+  });
+
+  if (!selectedConversationId) return;
+
+  socket.emit("chat:join", { conversationId: selectedConversationId });
+  socket.emit("chat:read", { conversationId: selectedConversationId });
+  if (selectedOtherUserId) {
+    setPresence(selectedOtherUserId, onlineUsers.has(String(selectedOtherUserId)));
+  }
+
+  if (form && input) {
+    input.addEventListener("input", function () {
+      socket.emit("chat:typing", { conversationId: selectedConversationId, isTyping: this.value.trim().length > 0 });
+      clearTimeout(typingTimeout);
+      typingTimeout = setTimeout(function () {
+        socket.emit("chat:typing", { conversationId: selectedConversationId, isTyping: false });
+      }, 1200);
+    });
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+
+      socket.emit("chat:send", {
+        conversationId: selectedConversationId,
+        text
+      }, function (response) {
+        if (!response || !response.ok) {
+          alert(response?.error || "Unable to send message");
+          return;
+        }
+
+        if (emptyState) {
+          emptyState.remove();
+        }
+
+        const node = renderMessage(response.message);
+        node.dataset.messageId = response.message.id;
+        thread.appendChild(node);
+        thread.scrollTop = thread.scrollHeight;
+        updateUnreadBadge(selectedConversationId, 0);
+        input.value = "";
+        if (typingIndicator) {
+          typingIndicator.textContent = "";
+        }
+      });
+    });
+  }
+
+  socket.on("chat:message", function (payload) {
+    if (!payload || payload.conversationId !== selectedConversationId) return;
+
+    const existing = thread.querySelector(`[data-message-id='${payload.message.id}']`);
+    if (existing) return;
+    if (payload.message.senderId === currentUserId) return;
+
+    if (emptyState) {
+      emptyState.remove();
+    }
+
+    const node = renderMessage(payload.message);
+    node.dataset.messageId = payload.message.id;
+    thread.appendChild(node);
+    thread.scrollTop = thread.scrollHeight;
+    updateUnreadBadge(selectedConversationId, 0);
+  });
+
+  socket.on("chat:conversation-updated", function (payload) {
+    if (!payload || !payload.conversation) return;
+    updateConversationPreview(payload.conversation);
+  });
+
+  socket.on("chat:typing", function (payload) {
+    if (!payload || payload.conversationId !== selectedConversationId || payload.userId === currentUserId || !typingIndicator) {
+      return;
+    }
+
+    if (payload.isTyping) {
+      typingIndicator.textContent = "Typing...";
+      if (statusText) {
+        statusText.textContent = "Typing...";
+      }
+    } else {
+      typingIndicator.textContent = "";
+      if (statusText && selectedOtherUserId) {
+        statusText.textContent = onlineUsers.has(String(selectedOtherUserId)) ? "Online now" : "Offline";
+      }
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

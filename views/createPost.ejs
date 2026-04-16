@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Post</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/style.css" rel="stylesheet">
+</head>
+<body class="app-body <%= user ? 'sidebar-expanded' : '' %>">
+
+<% if (user) { %>
+  <%- include("partials/sidebar") %>
+<% } else { %>
+  <%- include("partials/navbar") %>
+<% } %>
+
+<%
+  const composeType = initialType || "general";
+  const typeLabels = {
+    general: "Post",
+    video: "Video",
+    discussion: "Discussion"
+  };
+  const typeDescriptions = {
+    general: "Build a polished social post with text, optional media, and discovery tags.",
+    video: "Share a video-first update with a strong caption so it feels native to a creator platform.",
+    discussion: "Start a text-first conversation designed for opinions, questions, advice, or debates."
+  };
+%>
+
+<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %>">
+  <% if (success.length > 0) { %>
+    <div class="alert alert-success"><%= success %></div>
+  <% } %>
+
+  <% if (error.length > 0) { %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+
+  <section class="hero-card mb-4">
+    <span class="eyebrow">Compose <%= typeLabels[composeType] %></span>
+    <h1 class="display-title mt-3 mb-2">Create a polished <%= typeLabels[composeType].toLowerCase() %>.</h1>
+    <p class="hero-subtitle mb-0"><%= typeDescriptions[composeType] %></p>
+  </section>
+
+  <section class="content-card">
+    <form action="/create" method="POST" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input type="text" name="title" class="form-control" placeholder="<%= composeType === 'discussion' ? 'Ask a sharp question or frame the topic clearly' : 'Write a strong title' %>" required>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Content</label>
+        <textarea name="content" class="form-control" rows="6" placeholder="<%= composeType === 'discussion' ? 'Share your opinion, context, or the exact question you want people to respond to.' : 'Write the main caption or story behind this post.' %>" required></textarea>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-4 mb-3">
+          <label class="form-label">Category</label>
+          <select name="category" class="form-select">
+            <option value="general" <%= composeType === "general" ? "selected" : "" %>>General</option>
+            <option value="photo">Photo</option>
+            <option value="video" <%= composeType === "video" ? "selected" : "" %>>Video</option>
+            <option value="discussion" <%= composeType === "discussion" ? "selected" : "" %>>Discussion</option>
+          </select>
+        </div>
+
+        <div class="col-lg-4 mb-3">
+          <label class="form-label">Visibility</label>
+          <select name="visibility" class="form-select">
+            <option value="public">Public</option>
+            <option value="followers">Followers Only</option>
+          </select>
+        </div>
+
+        <div class="col-lg-4 mb-3">
+          <label class="form-label">Tags</label>
+          <input type="text" name="tags" class="form-control" placeholder="travel, food, tips">
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Upload Image or Video</label>
+        <input type="file" name="media" class="form-control">
+        <p class="meta-text mt-2 mb-0"><%= composeType === "discussion" ? "Discussion posts usually work best without heavy media, but you can still attach one if it supports the topic." : "Optional media helps the post feel more complete in the feed." %></p>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-brand" type="submit">Publish <%= typeLabels[composeType] %></button>
+        <a href="/profile/<%= user %>" class="btn btn-ghost text-decoration-none">Back to Profile</a>
+      </div>
+    </form>
+  </section>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Delulu</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/style.css" rel="stylesheet">
+</head>
+<body class="app-body <%= user ? 'sidebar-expanded' : '' %>">
+
+<% if (user) { %>
+  <%- include("partials/sidebar") %>
+<% } else { %>
+  <%- include("partials/navbar") %>
+<% } %>
+
+<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %>">
+  <% if (success.length > 0) { %>
+    <div class="alert alert-success"><%= success %></div>
+  <% } %>
+
+  <% if (error.length > 0) { %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+
+  <section class="filter-panel mb-4">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+      <div>
+        <h2 class="mb-1">Home Feed</h2>
+        <p class="section-subtitle mb-0">Switch between latest posts, popular content, and people you follow.</p>
+      </div>
+
+      <form action="/" method="GET" class="d-flex flex-wrap gap-2 align-items-center" id="feed-search">
+        <input type="search"
+               name="search"
+               id="feed-search-input"
+               class="form-control"
+               style="min-width: 200px; max-width: 280px;"
+               placeholder="Search posts, tags…"
+               value="<%= search || '' %>"
+               autocomplete="off">
+
+        <select name="tab" class="form-select">
+          <option value="latest" <%= activeTab === "latest" ? "selected" : "" %>>Latest</option>
+          <option value="popular" <%= activeTab === "popular" ? "selected" : "" %>>Popular</option>
+          <% if (user) { %>
+            <option value="following" <%= activeTab === "following" ? "selected" : "" %>>Following</option>
+          <% } %>
+        </select>
+
+        <select name="category" class="form-select">
+          <option value="all" <%= activeCategory === "all" ? "selected" : "" %>>All Categories</option>
+          <option value="general" <%= activeCategory === "general" ? "selected" : "" %>>General</option>
+          <option value="photo" <%= activeCategory === "photo" ? "selected" : "" %>>Photo</option>
+          <option value="video" <%= activeCategory === "video" ? "selected" : "" %>>Video</option>
+          <option value="discussion" <%= activeCategory === "discussion" ? "selected" : "" %>>Discussion</option>
+        </select>
+
+        <button class="btn btn-accent" type="submit">Apply Feed</button>
+      </form>
+    </div>
+  </section>
+
+  <% if (posts.length === 0) { %>
+    <div class="empty-state">No posts matched this feed yet. Try a different tab, category, or search term.</div>
+  <% } %>
+
+  <% posts.forEach(post => { %>
+    <% const postLiked = user && post.likes.some(like => like.toString() === user.toString()); %>
+    <% const postSaved = currentUser && currentUser.savedPosts && currentUser.savedPosts.some(savedPost => savedPost.toString() === post._id.toString()); %>
+    <article class="feed-card">
+      <div class="author-row mb-3">
+        <div class="author-meta">
+          <a href="/profile/<%= post.author._id %>">
+            <img src="<%= post.author.profilePic %>?v=<%= Date.now() %>"
+                 alt="Profile picture"
+                 class="avatar-md">
+          </a>
+
+          <div>
+            <a href="/profile/<%= post.author._id %>" class="text-decoration-none text-dark fw-bold d-block">
+              <%= post.author.displayName || post.author.username %>
+            </a>
+            <span class="handle-text">@<%= post.author.handle || post.author.username %></span>
+          </div>
+        </div>
+
+        <% if (user && user.toString() !== post.author._id.toString()) { %>
+          <button type="button"
+                  class="btn btn-soft btn-pill follow-btn"
+                  data-id="<%= post.author._id %>">
+            Follow
+          </button>
+        <% } %>
+      </div>
+
+      <div class="meta-row mb-3">
+        <span class="badge-soft"><%= post.category %></span>
+        <span class="badge-soft warm"><%= post.visibility %></span>
+        <% if (post.editedAt) { %>
+          <span class="info-chip">Edited</span>
+        <% } %>
+      </div>
+
+      <h3 class="mb-2"><%= post.title %></h3>
+      <p class="mb-3"><%= post.content %></p>
+
+      <% if (post.tags && post.tags.length > 0) { %>
+        <div class="meta-row mb-3">
+          <% post.tags.forEach(tag => { %>
+            <span class="tag-chip">#<%= tag %></span>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <% if (post.media) { %>
+        <% if (post.mediaType === "image") { %>
+          <img src="<%= post.media %>" alt="Post media" class="post-media image mb-3">
+        <% } else { %>
+          <video controls autoplay muted loop playsinline class="post-media video mb-3">
+            <source src="<%= post.media %>" type="video/mp4">
+          </video>
+        <% } %>
+      <% } %>
+
+      <div class="action-row mb-2">
+        <% if (user) { %>
+          <button type="button"
+                  class="icon-like-btn like-btn <%= postLiked ? 'liked' : '' %>"
+                  data-id="<%= post._id %>"
+                  aria-label="Like post">
+            <span class="icon-like-symbol"><%= postLiked ? '♥' : '♡' %></span>
+          </button>
+          <button type="button"
+                  class="icon-like-btn save-btn <%= postSaved ? 'saved' : '' %>"
+                  data-id="<%= post._id %>"
+                  aria-label="Save post">
+            <span class="icon-like-symbol"><%= postSaved ? '🔖' : '🔖' %></span>
+          </button>
+        <% } %>
+        <button onclick="sharePost('<%= post._id %>')" class="btn btn-soft">Share</button>
+        <% if (post.media) { %>
+          <a href="<%= post.media %>" download class="btn btn-ghost text-decoration-none">Download</a>
+        <% } %>
+      </div>
+
+      <p class="meta-text like-count mb-0" data-id="<%= post._id %>">
+        <%= post.likes.length %> likes | <%= post.comments.length %> comments
+      </p>
+
+      <div class="divider-line"></div>
+
+      <h6 class="mb-3">Comments</h6>
+
+      <div class="comments-container" data-id="<%= post._id %>">
+        <% post.comments.forEach(comment => { %>
+          <% const commentLiked = user && comment.likes && comment.likes.some(like => like.toString() === user.toString()); %>
+          <div class="comment-shell comment-item" data-comment-id="<%= comment._id %>">
+            <a href="/profile/<%= comment.user._id %>">
+              <img src="<%= comment.user.profilePic || '/uploads/default.png' %>?v=<%= Date.now() %>"
+                   alt="Comment user"
+                   class="avatar-sm">
+            </a>
+
+            <div class="comment-body">
+              <a href="/profile/<%= comment.user._id %>" class="fw-bold text-decoration-none text-dark d-inline-block mb-1">
+                <%= comment.user.displayName || comment.user.username %>
+              </a>
+              <p class="comment-text mb-2"><%= comment.text %></p>
+
+              <div class="comment-footer">
+                <% if (user) { %>
+                  <button type="button"
+                          class="icon-like-btn comment-like-btn <%= commentLiked ? 'liked' : '' %>"
+                          data-post-id="<%= post._id %>"
+                          data-comment-id="<%= comment._id %>"
+                          aria-label="Like comment">
+                    <span class="icon-like-symbol"><%= commentLiked ? '♥' : '♡' %></span>
+                  </button>
+                <% } %>
+                <span class="comment-like-count" data-post-id="<%= post._id %>" data-comment-id="<%= comment._id %>"><%= comment.likes ? comment.likes.length : 0 %></span>
+              </div>
+            </div>
+
+            <div class="comment-actions">
+              <button type="button" class="btn btn-ghost btn-sm comment-menu-btn">...</button>
+              <div class="comment-menu bg-white shadow-sm p-2" style="display:none; position:absolute; right:0; top:46px; z-index:10;">
+                <button class="btn btn-sm btn-link copy-comment w-100 text-start">Copy</button>
+                <% if (user && user.toString() === comment.user._id.toString()) { %>
+                  <button class="btn btn-sm btn-link text-danger delete-comment-btn w-100 text-start"
+                          data-post-id="<%= post._id %>"
+                          data-comment-id="<%= comment._id %>">
+                    Delete
+                  </button>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+
+      <% if (user) { %>
+        <div class="comment-composer">
+          <input type="text"
+                 class="form-control comment-input"
+                 data-id="<%= post._id %>"
+                 placeholder="Write a thoughtful comment">
+          <button type="button" class="btn btn-brand comment-btn" data-id="<%= post._id %>">Post</button>
+        </div>
+      <% } %>
+    </article>
+  <% }) %>
+</main>
+
+<script>
+function sharePost(postId) {
+  const url = window.location.origin + "/post/" + postId;
+  const text = "Check this post on Delulu: " + url;
+
+  if (navigator.share) {
+    navigator.share({ title: "Delulu", text: text, url: url });
+  } else {
+    window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+  }
+}
+
+function escapeHtml(value) {
+  const div = document.createElement("div");
+  div.textContent = value;
+  return div.innerHTML;
+}
+
+function buildCommentMarkup(data, postId) {
+  return `
+    <div class="comment-shell comment-item" data-comment-id="${data.commentId}">
+      <a href="/profile/${data.userId}">
+        <img src="${data.profilePic}" alt="Comment user" class="avatar-sm">
+      </a>
+
+      <div class="comment-body">
+        <a href="/profile/${data.userId}" class="fw-bold text-decoration-none text-dark d-inline-block mb-1">
+          ${escapeHtml(data.username)}
+        </a>
+        <p class="comment-text mb-2">${escapeHtml(data.text)}</p>
+        <div class="comment-footer">
+          <button type="button"
+                  class="icon-like-btn comment-like-btn"
+                  data-post-id="${postId}"
+                  data-comment-id="${data.commentId}"
+                  aria-label="Like comment">
+            <span class="icon-like-symbol">♡</span>
+          </button>
+          <span class="comment-like-count" data-post-id="${postId}" data-comment-id="${data.commentId}">${data.likesCount || 0}</span>
+        </div>
+      </div>
+
+      <div class="comment-actions">
+        <button type="button" class="btn btn-ghost btn-sm comment-menu-btn">...</button>
+        <div class="comment-menu bg-white shadow-sm p-2" style="display:none; position:absolute; right:0; top:46px; z-index:10;">
+          <button class="btn btn-sm btn-link copy-comment w-100 text-start">Copy</button>
+          <button class="btn btn-sm btn-link text-danger delete-comment-btn w-100 text-start"
+                  data-post-id="${postId}"
+                  data-comment-id="${data.commentId}">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function updateIconLikeButton(button, liked) {
+  button.classList.toggle("liked", liked);
+  const symbol = button.querySelector(".icon-like-symbol");
+  if (symbol) {
+    symbol.textContent = liked ? "♥" : "♡";
+  }
+}
+
+document.addEventListener("click", async function (e) {
+  const likeButton = e.target.closest(".like-btn");
+  if (!likeButton) return;
+
+  const postId = likeButton.dataset.id;
+  const res = await fetch("/like/" + postId, { method: "POST" });
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || "Unable to update like");
+    return;
+  }
+
+  const count = document.querySelector(`.like-count[data-id='${postId}']`);
+  count.textContent = `${data.likesCount} likes | ${count.textContent.split("|")[1] || "0 comments"}`;
+  updateIconLikeButton(likeButton, data.liked);
+});
+
+document.addEventListener("click", async function (e) {
+  const commentLikeButton = e.target.closest(".comment-like-btn");
+  if (!commentLikeButton) return;
+
+  const postId = commentLikeButton.dataset.postId;
+  const commentId = commentLikeButton.dataset.commentId;
+
+  const res = await fetch(`/comment-like/${postId}/${commentId}`, { method: "POST" });
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || "Unable to update comment like");
+    return;
+  }
+
+  updateIconLikeButton(commentLikeButton, data.liked);
+
+  const count = document.querySelector(`.comment-like-count[data-post-id='${postId}'][data-comment-id='${commentId}']`);
+  if (count) {
+    count.textContent = data.likesCount;
+  }
+});
+
+document.addEventListener("click", async function (e) {
+  const saveButton = e.target.closest(".save-btn");
+  if (!saveButton) return;
+
+  const postId = saveButton.dataset.id;
+  const res = await fetch("/save/" + postId, { method: "POST" });
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || "Unable to save post");
+    return;
+  }
+
+  saveButton.classList.toggle("saved", data.saved);
+});
+
+document.addEventListener("click", async function (e) {
+  if (!e.target.classList.contains("follow-btn")) return;
+
+  const userId = e.target.dataset.id;
+  const res = await fetch("/follow/" + userId, { method: "POST" });
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || "Unable to update follow status");
+    return;
+  }
+
+  e.target.textContent = data.following ? "Unfollow" : "Follow";
+});
+
+document.addEventListener("click", async function (e) {
+  if (!e.target.classList.contains("comment-btn")) return;
+
+  const postId = e.target.dataset.id;
+  const input = document.querySelector(`.comment-input[data-id='${postId}']`);
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  const res = await fetch("/comment/" + postId, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || "Unable to add comment");
+    return;
+  }
+
+  const container = document.querySelector(`.comments-container[data-id='${postId}']`);
+  container.insertAdjacentHTML("beforeend", buildCommentMarkup(data, postId));
+  const count = document.querySelector(`.like-count[data-id='${postId}']`);
+  const likesText = count.textContent.split("|")[0].trim();
+  const commentCount = container.querySelectorAll(".comment-item").length;
+  count.textContent = `${likesText} | ${commentCount} comments`;
+  input.value = "";
+});
+
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("comment-menu-btn")) {
+    const item = e.target.closest(".comment-item");
+    const menu = item.querySelector(".comment-menu");
+
+    document.querySelectorAll(".comment-menu").forEach(function (currentMenu) {
+      if (currentMenu !== menu) currentMenu.style.display = "none";
+    });
+
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+    return;
+  }
+
+  if (!e.target.closest(".comment-menu")) {
+    document.querySelectorAll(".comment-menu").forEach(function (menu) {
+      menu.style.display = "none";
+    });
+  }
+});
+
+document.addEventListener("click", function (e) {
+  if (!e.target.classList.contains("copy-comment")) return;
+
+  const text = e.target.closest(".comment-item").querySelector(".comment-text").innerText;
+  navigator.clipboard.writeText(text);
+  alert("Comment copied!");
+});
+
+document.addEventListener("click", async function (e) {
+  if (!e.target.classList.contains("delete-comment-btn")) return;
+
+  const postId = e.target.dataset.postId;
+  const commentId = e.target.dataset.commentId;
+  const confirmDelete = confirm("Delete this comment?");
+
+  if (!confirmDelete) return;
+
+  const res = await fetch(`/comment/${postId}/${commentId}`, { method: "DELETE" });
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || "Unable to delete comment");
+    return;
+  }
+
+  if (data.success) {
+    const container = document.querySelector(`.comments-container[data-id='${postId}']`);
+    e.target.closest(".comment-item").remove();
+    const count = document.querySelector(`.like-count[data-id='${postId}']`);
+    const likesText = count.textContent.split("|")[0].trim();
+    const commentCount = container.querySelectorAll(".comment-item").length;
+    count.textContent = `${likesText} | ${commentCount} comments`;
+  }
+});
+</script>
+
+</body>
+</html>

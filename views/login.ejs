@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/style.css" rel="stylesheet">
+</head>
+<body class="app-body">
+<%- include("partials/navbar") %>
+
+<main class="page-wrap">
+  <section class="auth-layout">
+    <div class="hero-card auth-showcase">
+      <span class="eyebrow">Phase 3 Design</span>
+      <h1 class="display-title mt-3">Welcome back to your mini social platform.</h1>
+      <p class="hero-subtitle mt-3 mb-4">Manage your feed, share posts, and build a profile that feels like a real social product instead of a class project.</p>
+
+      <div class="stats-band">
+        <div class="stat-tile">
+          <strong>Profiles</strong>
+          Social identity with handle, bio, and avatar
+        </div>
+        <div class="stat-tile">
+          <strong>Feed</strong>
+          Latest, popular, and following views
+        </div>
+        <div class="stat-tile">
+          <strong>Posts</strong>
+          Categories, tags, and audience control
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <% if (success.length > 0) { %>
+        <div class="alert alert-success"><%= success %></div>
+      <% } %>
+
+      <% if (error.length > 0) { %>
+        <div class="alert alert-danger"><%= error %></div>
+      <% } %>
+
+      <span class="eyebrow">Account Access</span>
+      <h2 class="mt-3 mb-2">Login</h2>
+      <p class="section-subtitle mb-4">Use your email and password to continue.</p>
+
+      <form action="/login" method="POST">
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+        </div>
+
+        <button type="submit" class="btn btn-brand w-100">Login</button>
+      </form>
+
+      <p class="small-note mt-4 mb-0">Need an account? <a href="/register">Create one here</a></p>
+    </div>
+  </section>
+</main>
+</body>
+</html>

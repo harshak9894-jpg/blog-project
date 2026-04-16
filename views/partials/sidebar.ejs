@@ -1,0 +1,105 @@
+<aside class="global-sidebar" id="global-sidebar">
+  <div class="global-sidebar-head">
+    <a href="/" class="global-sidebar-brand text-decoration-none">
+      <span class="brand-mark">D</span>
+      <span class="global-sidebar-brand-text">Delulu</span>
+    </a>
+    <button type="button" class="global-sidebar-toggle" id="global-sidebar-toggle" aria-label="Toggle sidebar">
+      <span class="toggle-expand">&gt;</span>
+      <span class="toggle-collapse">&lt;</span>
+    </button>
+  </div>
+
+  <nav class="global-sidebar-nav">
+    <a href="/" class="global-sidebar-link <%= currentPath === '/' && !search ? 'is-active' : '' %>">
+      <span class="global-sidebar-icon">&#8962;</span>
+      <span class="global-sidebar-text">Home</span>
+    </a>
+    <a href="/#feed-search-input" class="global-sidebar-link <%= search ? 'is-active' : '' %>">
+      <span class="global-sidebar-icon">&#128269;</span>
+      <span class="global-sidebar-text">Search</span>
+    </a>
+
+    <div class="global-sidebar-create">
+      <button type="button" class="global-sidebar-link global-sidebar-create-toggle" id="global-sidebar-create-toggle">
+        <span class="global-sidebar-icon">+</span>
+        <span class="global-sidebar-text">Create</span>
+      </button>
+      <div class="global-sidebar-create-menu" id="global-sidebar-create-menu">
+        <a href="/create?type=video" class="global-sidebar-create-item">
+          <span>&#127909;</span>
+          <span>Video</span>
+        </a>
+        <a href="/create?type=general" class="global-sidebar-create-item">
+          <span>&#9998;</span>
+          <span>Post</span>
+        </a>
+        <a href="/create?type=discussion" class="global-sidebar-create-item">
+          <span>&#128172;</span>
+          <span>Discussion</span>
+        </a>
+      </div>
+    </div>
+
+    <a href="/notifications" class="global-sidebar-link <%= currentPath === '/notifications' ? 'is-active' : '' %>">
+      <span class="global-sidebar-icon">&#128276;</span>
+      <span class="global-sidebar-text">Notifications</span>
+      <% if (unreadNotificationsCount > 0) { %>
+        <span class="global-sidebar-counter"><%= unreadNotificationsCount %></span>
+      <% } %>
+    </a>
+    <a href="/inbox" class="global-sidebar-link <%= currentPath.startsWith('/inbox') ? 'is-active' : '' %>">
+      <span class="global-sidebar-icon">&#9993;</span>
+      <span class="global-sidebar-text">Chat</span>
+      <% if (unreadChatCount > 0) { %>
+        <span class="global-sidebar-counter"><%= unreadChatCount %></span>
+      <% } %>
+    </a>
+    <a href="/profile/<%= user %>" class="global-sidebar-link <%= currentPath.startsWith('/profile') ? 'is-active' : '' %>">
+      <span class="global-sidebar-icon">&#128100;</span>
+      <span class="global-sidebar-text">Profile</span>
+    </a>
+    <a href="/settings" class="global-sidebar-link <%= currentPath === '/settings' || currentPath === '/saved' ? 'is-active' : '' %>">
+      <span class="global-sidebar-icon">&#9881;</span>
+      <span class="global-sidebar-text">Settings</span>
+    </a>
+  </nav>
+</aside>
+
+<script>
+(function () {
+  const sidebar = document.getElementById("global-sidebar");
+  const toggle = document.getElementById("global-sidebar-toggle");
+  const createToggle = document.getElementById("global-sidebar-create-toggle");
+  const createMenu = document.getElementById("global-sidebar-create-menu");
+  if (!sidebar || !toggle) return;
+
+  const storageKey = "delulu-sidebar-expanded";
+  const saved = localStorage.getItem(storageKey);
+  const isExpanded = saved === null ? true : saved === "true";
+  document.body.classList.toggle("sidebar-expanded", isExpanded);
+  document.body.classList.toggle("sidebar-collapsed", !isExpanded);
+
+  toggle.addEventListener("click", function () {
+    const nextExpanded = !document.body.classList.contains("sidebar-expanded");
+    document.body.classList.toggle("sidebar-expanded", nextExpanded);
+    document.body.classList.toggle("sidebar-collapsed", !nextExpanded);
+    localStorage.setItem(storageKey, String(nextExpanded));
+    if (!nextExpanded && createMenu) {
+      createMenu.classList.remove("is-open");
+    }
+  });
+
+  if (createToggle && createMenu) {
+    createToggle.addEventListener("click", function () {
+      createMenu.classList.toggle("is-open");
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest(".global-sidebar-create")) {
+        createMenu.classList.remove("is-open");
+      }
+    });
+  }
+})();
+</script>

@@ -44,6 +44,24 @@
     </div>
 
     <div class="profile-hero-side">
+      <% if (user && user.toString() === profileUser._id.toString()) { %>
+        <div class="profile-header-actions">
+          <div class="profile-page-menu-wrap">
+            <button type="button"
+                    class="profile-page-menu-btn"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    aria-label="Profile options">&#8942;</button>
+            <div class="profile-page-menu-panel" role="menu">
+              <a href="/edit-profile" class="profile-page-menu-item text-decoration-none" role="menuitem">Edit profile</a>
+              <a href="/saved" class="profile-page-menu-item text-decoration-none" role="menuitem">Saved posts</a>
+              <a href="/settings" class="profile-page-menu-item text-decoration-none" role="menuitem">Settings</a>
+              <a href="/logout" class="profile-page-menu-item danger text-decoration-none" role="menuitem">Log out</a>
+            </div>
+          </div>
+        </div>
+      <% } %>
+
       <div class="stats-band profile-stats-band">
         <div class="stat-tile">
           <strong><%= profileUser.followers.length %></strong>
@@ -167,6 +185,27 @@ document.querySelectorAll(".follow-btn").forEach(function (button) {
 });
 
 (function () {
+  document.querySelectorAll(".profile-page-menu-btn").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var wrap = btn.closest(".profile-page-menu-wrap");
+      var panel = wrap && wrap.querySelector(".profile-page-menu-panel");
+      if (!panel) return;
+      var wasOpen = panel.classList.contains("is-open");
+      document.querySelectorAll(".profile-page-menu-panel").forEach(function (p) {
+        p.classList.remove("is-open");
+      });
+      document.querySelectorAll(".profile-page-menu-btn").forEach(function (b) {
+        b.setAttribute("aria-expanded", "false");
+      });
+      if (!wasOpen) {
+        panel.classList.add("is-open");
+        btn.setAttribute("aria-expanded", "true");
+      }
+    });
+  });
+
   document.querySelectorAll(".profile-post-menu-btn").forEach(function (btn) {
     btn.addEventListener("click", function (e) {
       e.preventDefault();
@@ -189,6 +228,12 @@ document.querySelectorAll(".follow-btn").forEach(function (button) {
   });
 
   document.addEventListener("click", function () {
+    document.querySelectorAll(".profile-page-menu-panel.is-open").forEach(function (p) {
+      p.classList.remove("is-open");
+    });
+    document.querySelectorAll(".profile-page-menu-btn").forEach(function (b) {
+      b.setAttribute("aria-expanded", "false");
+    });
     document.querySelectorAll(".profile-post-menu-panel.is-open").forEach(function (p) {
       p.classList.remove("is-open");
     });

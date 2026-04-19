@@ -14,7 +14,7 @@
   <%- include("partials/navbar") %>
 <% } %>
 
-<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %>">
+<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %> page-stack">
   <% if (success.length > 0) { %>
     <div class="alert alert-success"><%= success %></div>
   <% } %>
@@ -22,6 +22,12 @@
   <% if (error.length > 0) { %>
     <div class="alert alert-danger"><%= error %></div>
   <% } %>
+
+  <section class="page-header-card">
+    <span class="eyebrow">Post</span>
+    <h1 class="display-title"><%= post.title %></h1>
+    <p class="section-subtitle">Read the full post, review its stats, and share or download the media.</p>
+  </section>
 
   <section class="detail-grid">
     <aside class="content-card sticky-card">

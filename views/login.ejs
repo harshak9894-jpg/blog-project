@@ -9,7 +9,7 @@
 <body class="app-body">
 <%- include("partials/navbar") %>
 
-<main class="page-wrap">
+<main class="page-wrap page-stack">
   <section class="auth-layout">
     <div class="auth-card">
       <% if (success.length > 0) { %>
@@ -20,9 +20,11 @@
         <div class="alert alert-danger"><%= error %></div>
       <% } %>
 
-      <span class="eyebrow">Account Access</span>
-      <h2 class="mt-3 mb-2">Login</h2>
-      <p class="section-subtitle mb-4">Use your email and password to continue.</p>
+      <div class="content-card-header">
+        <span class="eyebrow">Account Access</span>
+        <h1 class="content-card-title">Login</h1>
+        <p class="content-card-subtitle">Use your email and password to continue.</p>
+      </div>
 
       <form action="/login" method="POST">
         <div class="mb-3">

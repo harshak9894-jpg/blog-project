@@ -14,7 +14,7 @@
   <%- include("partials/navbar") %>
 <% } %>
 
-<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %>">
+<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %> page-stack">
   <% if (success.length > 0) { %>
     <div class="alert alert-success"><%= success %></div>
   <% } %>

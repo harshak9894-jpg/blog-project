@@ -14,7 +14,7 @@
   <%- include("partials/navbar") %>
 <% } %>
 
-<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %>">
+<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %> page-stack">
   <% if (success.length > 0) { %>
     <div class="alert alert-success"><%= success %></div>
   <% } %>
@@ -40,8 +40,9 @@
     <div class="empty-state">You have no notifications yet.</div>
   <% } %>
 
+  <section class="surface-list">
   <% notifications.forEach(notification => { %>
-    <article class="content-card mb-3 <%= notification.read ? '' : 'notification-unread' %>">
+    <article class="content-card notification-card <%= notification.read ? '' : 'notification-unread' %>">
       <div class="d-flex flex-column flex-lg-row justify-content-between gap-2">
         <div>
           <p class="mb-1 fw-semibold"><%= notification.message %></p>
@@ -53,6 +54,7 @@
       </div>
     </article>
   <% }) %>
+  </section>
 </main>
 
 </body>

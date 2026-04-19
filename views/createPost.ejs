@@ -21,14 +21,9 @@
     video: "Video",
     discussion: "Discussion"
   };
-  const typeDescriptions = {
-    general: "Build a polished social post with text, optional media, and discovery tags.",
-    video: "Share a video-first update with a strong caption so it feels native to a creator platform.",
-    discussion: "Start a text-first conversation designed for opinions, questions, advice, or debates."
-  };
 %>
 
-<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %>">
+<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %> page-stack">
   <% if (success.length > 0) { %>
     <div class="alert alert-success"><%= success %></div>
   <% } %>
@@ -37,7 +32,17 @@
     <div class="alert alert-danger"><%= error %></div>
   <% } %>
 
+  <section class="page-header-card">
+    <span class="eyebrow">Create</span>
+    <h1 class="display-title">Publish a new <%= typeLabels[composeType].toLowerCase() %>.</h1>
+    <p class="section-subtitle">Use the same clean publishing flow for posts, videos, and discussions.</p>
+  </section>
+
   <section class="content-card">
+    <div class="content-card-header">
+      <h2 class="content-card-title">Post details</h2>
+      <p class="content-card-subtitle">Fill out the core information, choose visibility, and add media if needed.</p>
+    </div>
     <form action="/create" method="POST" enctype="multipart/form-data">
       <div class="mb-3">
         <label class="form-label">Title</label>

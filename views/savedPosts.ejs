@@ -14,7 +14,7 @@
   <%- include("partials/navbar") %>
 <% } %>
 
-<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %>">
+<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %> page-stack">
   <% if (success.length > 0) { %>
     <div class="alert alert-success"><%= success %></div>
   <% } %>
@@ -23,12 +23,19 @@
     <div class="alert alert-danger"><%= error %></div>
   <% } %>
 
+  <section class="page-header-card">
+    <span class="eyebrow">Library</span>
+    <h1 class="display-title">Saved posts.</h1>
+    <p class="section-subtitle">Everything you bookmarked in one tidy place.</p>
+  </section>
+
   <% if (savedPosts.length === 0) { %>
     <div class="empty-state">You have not saved any posts yet.</div>
   <% } %>
 
+  <section class="surface-list">
   <% savedPosts.forEach(post => { %>
-    <article class="content-card mb-4">
+    <article class="content-card saved-post-card">
       <div>
         <div class="meta-row mb-2">
           <span class="badge-soft"><%= post.category || "general" %></span>
@@ -40,6 +47,7 @@
       </div>
     </article>
   <% }) %>
+  </section>
 </main>
 
 </body>

@@ -14,7 +14,7 @@
   <%- include("partials/navbar") %>
 <% } %>
 
-<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %>">
+<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %> page-stack">
   <% if (success.length > 0) { %>
     <div class="alert alert-success"><%= success %></div>
   <% } %>
@@ -23,13 +23,23 @@
     <div class="alert alert-danger"><%= error %></div>
   <% } %>
 
-  <section class="content-card settings-more-card">
+  <section class="page-header-card">
+    <span class="eyebrow">Account</span>
+    <h1 class="display-title">Settings.</h1>
+    <p class="section-subtitle">Quick links for your saved content and account actions.</p>
+  </section>
+
+  <section class="content-card settings-card settings-more-card">
+    <div class="content-card-header compact">
+      <h2 class="content-card-title">Quick actions</h2>
+      <p class="content-card-subtitle">Open the sections you use most without searching through the app.</p>
+    </div>
     <div class="settings-more-actions d-flex flex-column gap-2">
       <a href="/saved" class="btn btn-soft text-decoration-none text-start d-flex align-items-center justify-content-between">
         <span>Saved posts</span>
         <span class="meta-text" aria-hidden="true">&#128278;</span>
       </a>
-      <a href="/logout" class="btn btn-outline-danger text-decoration-none text-start">Log out</a>
+      <a href="/logout" class="btn btn-ghost settings-danger-link text-decoration-none text-start">Log out</a>
     </div>
   </section>
 </main>

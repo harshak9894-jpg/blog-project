@@ -14,7 +14,7 @@
   <%- include("partials/navbar") %>
 <% } %>
 
-<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %>">
+<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %> page-stack">
   <% if (success.length > 0) { %>
     <div class="alert alert-success"><%= success %></div>
   <% } %>
@@ -30,6 +30,10 @@
   </section>
 
   <section class="content-card">
+    <div class="content-card-header">
+      <h2 class="content-card-title">Edit post details</h2>
+      <p class="content-card-subtitle">Update the content, tags, category, and audience in one place.</p>
+    </div>
     <form action="/edit/<%= post._id %>?_method=PUT" method="POST">
       <div class="mb-3">
         <label class="form-label">Title</label>

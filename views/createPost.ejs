@@ -37,12 +37,6 @@
     <div class="alert alert-danger"><%= error %></div>
   <% } %>
 
-  <section class="hero-card mb-4">
-    <span class="eyebrow">Compose <%= typeLabels[composeType] %></span>
-    <h1 class="display-title mt-3 mb-2">Create a polished <%= typeLabels[composeType].toLowerCase() %>.</h1>
-    <p class="hero-subtitle mb-0"><%= typeDescriptions[composeType] %></p>
-  </section>
-
   <section class="content-card">
     <form action="/create" method="POST" enctype="multipart/form-data">
       <div class="mb-3">

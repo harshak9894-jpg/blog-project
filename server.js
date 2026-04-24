@@ -32,6 +32,7 @@ if (isProduction) {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use("/uploads", express.static(getUploadsDir()));
+app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
 app.use(methodOverride("_method"));
 app.use(express.json());
 

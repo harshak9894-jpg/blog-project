@@ -5,7 +5,6 @@ const path = require("path");
 const User = require("../models/User");
 const Post = require("../models/Post");
 const asyncHandler = require("../utils/asyncHandler");
-const { getUploadsDir } = require("../utils/uploads");
 const { requireLogin, requireLoginJson } = require("../middleware/auth");
 
 const router = express.Router();
@@ -16,7 +15,7 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, getUploadsDir());
+    cb(null, "public/uploads/");
   },
   filename: function (req, file, cb) {
     cb(null, "dp-" + Date.now() + path.extname(file.originalname));
@@ -45,10 +44,6 @@ function normalizeHandle(value) {
     .toLowerCase()
     .replace(/[^a-z0-9_]/g, "")
     .slice(0, 30);
-}
-
-function hasObjectId(list, value) {
-  return Array.isArray(list) && list.some((item) => String(item) === String(value));
 }
 
 async function createNotification({ recipientId, actorId, type, message, postId = null }) {
@@ -348,7 +343,7 @@ router.post("/follow/:id", requireLoginJson, asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "Cannot follow yourself" });
   }
 
-  const alreadyFollowing = hasObjectId(currentUser.following, targetUser._id);
+  const alreadyFollowing = currentUser.following.includes(targetUser._id);
 
   if (alreadyFollowing) {
     currentUser.following.pull(targetUser._id);
@@ -404,5 +399,3 @@ router.post("/notifications/read-all", requireLogin, asyncHandler(async (req, re
 }));
 
 module.exports = router;
-
-

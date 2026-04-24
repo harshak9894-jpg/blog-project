@@ -4,14 +4,13 @@ const User = require("../models/User");
 const multer = require("multer");
 const path = require("path");
 const asyncHandler = require("../utils/asyncHandler");
-const { getUploadsDir } = require("../utils/uploads");
 const { requireLogin, requireLoginJson } = require("../middleware/auth");
 
 const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, getUploadsDir());
+    cb(null, "public/uploads/");
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname));
@@ -53,27 +52,6 @@ function pickAllowedValue(value, allowedValues, fallbackValue) {
 
 function escapeRegex(string) {
   return String(string).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function hasObjectId(list, value) {
-  return Array.isArray(list) && list.some((item) => String(item) === String(value));
-}
-
-function canViewPost(post, viewer) {
-  if (!post) {
-    return false;
-  }
-
-  if (post.visibility !== "followers") {
-    return true;
-  }
-
-  if (!viewer) {
-    return false;
-  }
-
-  return String(post.author?._id || post.author) === String(viewer._id) ||
-    hasObjectId(viewer.following, post.author?._id || post.author);
 }
 
 async function createNotification({ recipientId, actorId, type, message, postId = null }) {
@@ -250,7 +228,7 @@ router.post("/save/:id", requireLoginJson, asyncHandler(async (req, res) => {
     return res.status(404).json({ error: "Post not found" });
   }
 
-  const alreadySaved = hasObjectId(currentUser.savedPosts, post._id);
+  const alreadySaved = currentUser.savedPosts.includes(post._id);
 
   if (alreadySaved) {
     currentUser.savedPosts.pull(post._id);
@@ -291,7 +269,7 @@ router.post("/like/:id", requireLoginJson, asyncHandler(async (req, res) => {
   }
 
   const userId = req.session.userId;
-  const alreadyLiked = hasObjectId(post.likes, userId);
+  const alreadyLiked = post.likes.includes(userId);
 
   if (alreadyLiked) {
     post.likes.pull(userId);
@@ -385,7 +363,7 @@ router.post("/comment-like/:postId/:commentId", requireLoginJson, asyncHandler(a
   }
 
   const userId = req.session.userId;
-  const alreadyLiked = hasObjectId(comment.likes, userId);
+  const alreadyLiked = comment.likes.includes(userId);
 
   if (alreadyLiked) {
     comment.likes.pull(userId);
@@ -498,45 +476,22 @@ router.delete("/delete/:id", requireLogin, asyncHandler(async (req, res) => {
 }));
 
 router.get("/post/:id", asyncHandler(async (req, res) => {
-  const [post, viewer] = await Promise.all([
-    Post.findById(req.params.id)
-      .populate("author")
-      .populate("comments.user"),
-    req.session.userId
-      ? User.findById(req.session.userId).select("following")
-      : null
-  ]);
+  const post = await Post.findById(req.params.id)
+    .populate("author")
+    .populate("comments.user");
 
   if (!post) {
     req.flash("error", "Post not found");
     return res.redirect("/");
   }
-
-  if (!canViewPost(post, viewer)) {
-    req.flash("error", "This post is only available to followers");
-    return res.redirect("/");
-  }
-
-  post.comments = post.comments.filter((comment) => comment.user);
 
   res.render("singlePost", { post });
 }));
 
 router.get("/download-post/:id", asyncHandler(async (req, res) => {
-  const [post, viewer] = await Promise.all([
-    Post.findById(req.params.id).populate("author"),
-    req.session.userId
-      ? User.findById(req.session.userId).select("following")
-      : null
-  ]);
-
+  const post = await Post.findById(req.params.id);
   if (!post) {
     req.flash("error", "Post not found");
-    return res.redirect("/");
-  }
-
-  if (!canViewPost(post, viewer)) {
-    req.flash("error", "This post is only available to followers");
     return res.redirect("/");
   }
 
@@ -565,5 +520,3 @@ router.get("/download-post/:id", asyncHandler(async (req, res) => {
 }));
 
 module.exports = router;
-
-

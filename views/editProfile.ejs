@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Edit Profile</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="/style.css" rel="stylesheet">
@@ -14,7 +13,7 @@
   <%- include("partials/navbar") %>
 <% } %>
 
-<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %> page-stack">
+<main class="<%= user ? 'page-wrap page-wrap-with-sidebar' : 'page-wrap' %>">
   <% if (success.length > 0) { %>
     <div class="alert alert-success"><%= success %></div>
   <% } %>
@@ -23,17 +22,8 @@
     <div class="alert alert-danger"><%= error %></div>
   <% } %>
 
-  <section class="page-header-card">
-    <span class="eyebrow">Profile</span>
-    <h1 class="display-title">Update your profile.</h1>
-    <p class="section-subtitle">Keep your photo, identity, and messaging preferences in sync.</p>
-  </section>
-
   <section class="content-card mb-4">
-    <div class="content-card-header compact">
-      <h2 class="content-card-title">Profile picture</h2>
-      <p class="content-card-subtitle">Upload a new image without changing the rest of your profile.</p>
-    </div>
+    <h2 class="h5 mb-3">Profile picture</h2>
     <form action="/upload-dp" method="POST" enctype="multipart/form-data">
       <label class="form-label">Upload image</label>
       <input type="file" name="profilePic" class="form-control mb-3" accept="image/jpeg,image/png,image/jpg" required>
@@ -43,10 +33,7 @@
   </section>
 
   <section class="content-card">
-    <div class="content-card-header compact">
-      <h2 class="content-card-title">Profile details</h2>
-      <p class="content-card-subtitle">Control how your name, handle, bio, and inbox rules appear to others.</p>
-    </div>
+    <h2 class="h5 mb-3">Profile details</h2>
     <form action="/edit-profile" method="POST">
       <div class="row">
         <div class="col-lg-6 mb-3">

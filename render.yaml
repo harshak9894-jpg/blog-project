@@ -13,9 +13,9 @@ services:
         sync: false
       - key: JWT_SECRET
         sync: false
-      - key: UPLOADS_DIR
-        value: /var/data/uploads
-    disk:
-      name: uploads
-      mountPath: /var/data
-      sizeGB: 1
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false

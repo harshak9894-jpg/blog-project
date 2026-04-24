@@ -2,20 +2,11 @@ const express = require("express");
 const Post = require("../models/Post");
 const User = require("../models/User");
 const multer = require("multer");
-const path = require("path");
 const asyncHandler = require("../utils/asyncHandler");
+const { storeUploadedFile } = require("../utils/mediaStorage");
 const { requireLogin, requireLoginJson } = require("../middleware/auth");
 
 const router = express.Router();
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
-});
 
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
@@ -33,7 +24,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 200 * 1024 * 1024 },
   fileFilter
 });
@@ -178,8 +169,15 @@ router.post("/create", requireLogin, upload.single("media"), asyncHandler(async 
   let mediaType = null;
 
   if (req.file) {
-    mediaPath = "/uploads/" + req.file.filename;
-    mediaType = req.file.mimetype.startsWith("video") ? "video" : "image";
+    const uploadedMedia = await storeUploadedFile({
+      file: req.file,
+      folder: "blog-project/posts",
+      prefix: "post",
+      resourceType: "auto"
+    });
+
+    mediaPath = uploadedMedia.url;
+    mediaType = uploadedMedia.resourceType === "video" ? "video" : "image";
   }
 
   await Post.create({

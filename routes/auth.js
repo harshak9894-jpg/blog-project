@@ -1,10 +1,10 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
-const path = require("path");
 const User = require("../models/User");
 const Post = require("../models/Post");
 const asyncHandler = require("../utils/asyncHandler");
+const { storeUploadedFile } = require("../utils/mediaStorage");
 const { requireLogin, requireLoginJson } = require("../middleware/auth");
 
 const router = express.Router();
@@ -12,15 +12,6 @@ const router = express.Router();
 /* ======================
    MULTER CONFIG (DP)
 ====================== */
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, "dp-" + Date.now() + path.extname(file.originalname));
-  }
-});
 
 const fileFilter = (req, file, cb) => {
   const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
@@ -33,7 +24,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const uploadDP = multer({
-  storage: storage,
+  storage: multer.memoryStorage(),
   fileFilter: fileFilter,
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB
 });
@@ -314,7 +305,14 @@ router.post("/upload-dp", requireLogin, uploadDP.single("profilePic"), asyncHand
     return res.redirect("/login");
   }
 
-  user.profilePic = "/uploads/" + req.file.filename;
+  const uploadedProfilePic = await storeUploadedFile({
+    file: req.file,
+    folder: "blog-project/profile-pics",
+    prefix: "dp",
+    resourceType: "image"
+  });
+
+  user.profilePic = uploadedProfilePic.url;
 
   await user.save();
 

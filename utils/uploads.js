@@ -3,26 +3,49 @@ const path = require("path");
 
 const projectPublicDir = path.join(__dirname, "..", "public");
 const projectUploadsDir = path.join(projectPublicDir, "uploads");
-const configuredUploadsDir = process.env.UPLOADS_DIR
+const preferredUploadsDir = process.env.UPLOADS_DIR
   ? path.resolve(process.env.UPLOADS_DIR)
   : projectUploadsDir;
 const defaultAvatarSource = path.join(projectUploadsDir, "default.png");
-const defaultAvatarTarget = path.join(configuredUploadsDir, "default.png");
+let activeUploadsDir = null;
 
 function ensureUploadsDir() {
-  if (!fs.existsSync(configuredUploadsDir)) {
-    fs.mkdirSync(configuredUploadsDir, { recursive: true });
+  if (activeUploadsDir) {
+    return activeUploadsDir;
   }
 
-  if (
-    configuredUploadsDir !== projectUploadsDir &&
-    fs.existsSync(defaultAvatarSource) &&
-    !fs.existsSync(defaultAvatarTarget)
-  ) {
-    fs.copyFileSync(defaultAvatarSource, defaultAvatarTarget);
+  const candidates = preferredUploadsDir === projectUploadsDir
+    ? [projectUploadsDir]
+    : [preferredUploadsDir, projectUploadsDir];
+
+  for (const uploadsDir of candidates) {
+    try {
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+
+      const defaultAvatarTarget = path.join(uploadsDir, "default.png");
+
+      if (
+        uploadsDir !== projectUploadsDir &&
+        fs.existsSync(defaultAvatarSource) &&
+        !fs.existsSync(defaultAvatarTarget)
+      ) {
+        fs.copyFileSync(defaultAvatarSource, defaultAvatarTarget);
+      }
+
+      activeUploadsDir = uploadsDir;
+      return activeUploadsDir;
+    } catch (error) {
+      if (uploadsDir === projectUploadsDir) {
+        throw error;
+      }
+
+      console.warn(`Falling back to local uploads directory after failing to use ${uploadsDir}: ${error.message}`);
+    }
   }
 
-  return configuredUploadsDir;
+  return projectUploadsDir;
 }
 
 function getUploadsDir() {

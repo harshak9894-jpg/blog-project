@@ -1,6 +1,6 @@
 const fs = require("fs/promises");
 const path = require("path");
-const { getUploadsDir } = require("./uploads");
+const { getUploadsDir, UPLOAD_SEGMENTS } = require("./uploads");
 const { isCloudinaryConfigured, uploadBufferToCloudinary } = require("./cloudinary");
 
 function createUploadName(prefix, originalname = "", mimetype = "") {
@@ -21,17 +21,21 @@ function createUploadName(prefix, originalname = "", mimetype = "") {
   return `${prefix}-${Date.now()}-${baseName}${extension}`;
 }
 
-async function storeUploadedFile({ file, folder, prefix, resourceType = "auto" }) {
+async function storeUploadedFile({ file, cloudFolder, segment, prefix, resourceType = "auto" }) {
   if (!file) {
     return null;
   }
 
   const uploadName = createUploadName(prefix, file.originalname, file.mimetype);
+  const normalizedSegment = segment || (
+    resourceType === "video" ? UPLOAD_SEGMENTS.video : UPLOAD_SEGMENTS.post
+  );
+  const normalizedCloudFolder = cloudFolder || `blog-project/${normalizedSegment}`;
 
   if (isCloudinaryConfigured) {
     const uploaded = await uploadBufferToCloudinary({
       buffer: file.buffer,
-      folder,
+      folder: normalizedCloudFolder,
       publicId: uploadName.replace(path.extname(uploadName), ""),
       resourceType
     });
@@ -42,12 +46,12 @@ async function storeUploadedFile({ file, folder, prefix, resourceType = "auto" }
     };
   }
 
-  const uploadsDir = getUploadsDir();
+  const uploadsDir = getUploadsDir(normalizedSegment);
   const localFilePath = path.join(uploadsDir, uploadName);
   await fs.writeFile(localFilePath, file.buffer);
 
   return {
-    url: `/uploads/${uploadName}`,
+    url: `/uploads/${normalizedSegment}/${uploadName}`,
     resourceType: resourceType === "auto"
       ? (file.mimetype.startsWith("video") ? "video" : "image")
       : resourceType

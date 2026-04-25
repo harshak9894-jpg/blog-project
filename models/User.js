@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { DEFAULT_PROFILE_PIC } = require("../utils/uploads");
 
 const notificationSchema = new mongoose.Schema({
   type: {
@@ -74,7 +75,7 @@ const userSchema = new mongoose.Schema({
   },
   profilePic: {
     type: String,
-    default: "/uploads/default.png"
+    default: DEFAULT_PROFILE_PIC
   },
   followers: [
     {

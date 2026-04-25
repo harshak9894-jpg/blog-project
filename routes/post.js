@@ -169,10 +169,12 @@ router.post("/create", requireLogin, upload.single("media"), asyncHandler(async 
   let mediaType = null;
 
   if (req.file) {
+    const segment = req.file.mimetype.startsWith("video") ? "video" : "post";
     const uploadedMedia = await storeUploadedFile({
       file: req.file,
-      folder: "blog-project/posts",
-      prefix: "post",
+      cloudFolder: `blog-project/${segment}`,
+      segment,
+      prefix: segment,
       resourceType: "auto"
     });
 

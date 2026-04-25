@@ -307,8 +307,9 @@ router.post("/upload-dp", requireLogin, uploadDP.single("profilePic"), asyncHand
 
   const uploadedProfilePic = await storeUploadedFile({
     file: req.file,
-    folder: "blog-project/profile-pics",
-    prefix: "dp",
+    cloudFolder: "blog-project/profile",
+    segment: "profile",
+    prefix: "profile",
     resourceType: "image"
   });
 

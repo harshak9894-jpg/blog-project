@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" role="img" aria-label="Delulu logo">
+  <defs>
+    <linearGradient id="brandBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b8e6ff" />
+      <stop offset="38%" stop-color="#4ea9ff" />
+      <stop offset="100%" stop-color="#0d57cf" />
+    </linearGradient>
+  </defs>
+  <path fill="url(#brandBlue)" d="M34 44c61 0 121 7 167 29 49 24 75 60 75 101s-26 77-75 101c-46 22-106 29-167 29l28-42c38 0 76-4 107-15 33-11 56-31 73-54 9-12 13-25 13-38s-4-26-13-38c-17-23-40-43-73-54-31-11-69-15-107-15L34 44z" />
+  <path fill="#ffffff" d="M121 95h38c36 0 64 7 84 22 17 13 26 31 26 57 0 25-9 44-26 57-20 15-48 22-84 22h-38l13-31h20c28 0 49-4 62-12 12-8 17-19 17-36 0-17-5-28-17-36-13-8-34-12-62-12h-20l-13-31z" />
+  <path fill="#ffffff" d="M79 88h55l-16 95c-7 43-33 78-72 97l-14 7 24-93c6-25 14-61 23-106z" />
+</svg>

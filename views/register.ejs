@@ -2,56 +2,72 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Register</title>
+  <title>Register New Account</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="/style.css" rel="stylesheet">
 </head>
-<body class="app-body">
-<%- include("partials/navbar") %>
+<body class="app-body auth-page">
+<main class="auth-screen">
+  <section class="auth-stage auth-stage-register">
+    <div class="auth-panel">
+      <div class="auth-visual" aria-hidden="true">
+        <img src="/auth-logo.svg" alt="" class="auth-floating-mark auth-floating-mark-main">
+        <img src="/auth-logo.svg" alt="" class="auth-floating-mark auth-floating-mark-mini">
+        <img src="/auth-logo.svg" alt="" class="auth-watermark">
+        <div class="auth-ribbon auth-ribbon-one"></div>
+        <div class="auth-ribbon auth-ribbon-two"></div>
+      </div>
 
-<main class="page-wrap page-stack">
-  <section class="auth-layout">
-    <div class="auth-card">
+      <div class="auth-form-card auth-form-card-register">
       <% if (success.length > 0) { %>
-        <div class="alert alert-success"><%= success %></div>
+        <div class="alert alert-success auth-alert"><%= success %></div>
       <% } %>
 
       <% if (error.length > 0) { %>
-        <div class="alert alert-danger"><%= error %></div>
+        <div class="alert alert-danger auth-alert"><%= error %></div>
       <% } %>
 
-      <div class="content-card-header">
-        <span class="eyebrow">Start Here</span>
-        <h1 class="content-card-title">Register</h1>
-        <p class="content-card-subtitle">Create your account and choose how your profile will appear to others.</p>
+        <div class="auth-brand-row">
+          <img src="/auth-logo.svg" alt="Delulu logo" class="auth-brand-logo">
+          <div>
+            <p class="auth-brand-name">Delulu</p>
+            <p class="auth-brand-tagline">Blue hour social</p>
+          </div>
+        </div>
+
+        <div class="auth-form-head">
+          <h1>Register New Account</h1>
+          <p>Set up your identity and start your profile with the same polished look on desktop and mobile.</p>
+        </div>
+
+        <form action="/register" method="POST" class="auth-form-stack">
+          <div class="auth-form-grid">
+            <div class="auth-input-group">
+              <label class="form-label">Username</label>
+              <input type="text" name="username" class="form-control auth-input" placeholder="Your username" required>
+            </div>
+
+            <div class="auth-input-group">
+              <label class="form-label">Handle</label>
+              <input type="text" name="handle" class="form-control auth-input" placeholder="yourname">
+            </div>
+          </div>
+
+          <div class="auth-input-group">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control auth-input" placeholder="username@gmail.com" required>
+          </div>
+
+          <div class="auth-input-group">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control auth-input" placeholder="Create password" required>
+          </div>
+
+          <button type="submit" class="btn auth-submit-btn w-100">Create Account</button>
+        </form>
+
+        <a href="/login" class="auth-switch-link auth-switch-link-secondary">Back to login</a>
       </div>
-
-      <form action="/register" method="POST">
-        <div class="mb-3">
-          <label class="form-label">Username</label>
-          <input type="text" name="username" class="form-control" required>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Handle</label>
-          <input type="text" name="handle" class="form-control" placeholder="yourname">
-          <div class="form-text">Optional. We can generate one from your username.</div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Email</label>
-          <input type="email" name="email" class="form-control" required>
-        </div>
-
-        <div class="mb-4">
-          <label class="form-label">Password</label>
-          <input type="password" name="password" class="form-control" required>
-        </div>
-
-        <button type="submit" class="btn btn-brand w-100">Create Account</button>
-      </form>
-
-      <p class="small-note mt-4 mb-0">Already have an account? <a href="/login">Login here</a></p>
     </div>
   </section>
 </main>

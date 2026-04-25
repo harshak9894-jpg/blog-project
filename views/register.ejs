@@ -10,16 +10,7 @@
 <main class="auth-screen">
   <section class="auth-stage auth-stage-register">
     <div class="auth-panel">
-      <div class="auth-visual" aria-hidden="true">
-        <div class="auth-zig auth-zig-large"><span></span><span></span></div>
-        <div class="auth-zig auth-zig-small"><span></span><span></span></div>
-        <div class="auth-curve auth-curve-main"></div>
-        <div class="auth-curve auth-curve-bottom"></div>
-        <div class="auth-wave-stack">
-          <span></span>
-          <span></span>
-        </div>
-      </div>
+      <div class="auth-visual" aria-hidden="true"></div>
 
       <div class="auth-form-card auth-form-card-register">
       <% if (success.length > 0) { %>
@@ -30,13 +21,7 @@
         <div class="alert alert-danger auth-alert"><%= error %></div>
       <% } %>
 
-        <div class="auth-brand-row">
-          <img src="/auth-logo.svg" alt="Delulu logo" class="auth-brand-logo">
-          <div>
-            <p class="auth-brand-name">Delulu</p>
-            <p class="auth-brand-tagline">Your logo</p>
-          </div>
-        </div>
+        <img src="/auth-logo.svg" alt="Delulu logo" class="auth-card-logo">
 
         <div class="auth-form-head">
           <h1>Register New Account</h1>

@@ -537,10 +537,8 @@ h5,
   min-height: 100vh;
   padding-bottom: 0;
   background:
-    radial-gradient(circle at 88% 10%, rgba(205, 234, 255, 0.44), transparent 17%),
-    radial-gradient(circle at 11% 86%, rgba(197, 231, 255, 0.4), transparent 18%),
-    radial-gradient(circle at 82% 84%, rgba(173, 219, 255, 0.2), transparent 16%),
-    linear-gradient(180deg, #77b8f6 0%, #76b4f0 100%);
+    radial-gradient(circle at 71% 18%, rgba(162, 213, 255, 0.18), transparent 18%),
+    linear-gradient(180deg, #78b7f3 0%, #74b3ec 100%);
   overflow-x: hidden;
 }
 
@@ -559,7 +557,7 @@ h5,
   height: 470px;
   top: -120px;
   right: -120px;
-  background: rgba(225, 241, 255, 0.24);
+  background: rgba(224, 242, 255, 0.24);
 }
 
 .auth-page::after {
@@ -567,7 +565,7 @@ h5,
   height: 520px;
   bottom: -260px;
   left: -110px;
-  background: rgba(205, 234, 255, 0.22);
+  background: rgba(213, 238, 255, 0.22);
 }
 
 .auth-screen {
@@ -586,10 +584,10 @@ h5,
 
 .auth-panel {
   position: relative;
-  min-height: 700px;
+  min-height: 690px;
   padding: 56px 46px;
-  border-radius: 30px;
-  background: linear-gradient(180deg, #07529d 0%, #0460b3 46%, #0a60b7 100%);
+  border-radius: 28px;
+  background: linear-gradient(180deg, #0a4f96 0%, #085ead 44%, #0c60b0 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 32px 74px rgba(17, 82, 151, 0.34);
   overflow: hidden;
@@ -627,97 +625,10 @@ h5,
 }
 
 .auth-visual {
-  position: relative;
   position: absolute;
   inset: 0;
   overflow: hidden;
-}
-
-.auth-zig {
-  position: absolute;
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  filter: drop-shadow(0 18px 26px rgba(168, 225, 255, 0.16));
-}
-
-.auth-zig span {
-  display: block;
-  width: 88px;
-  height: 46px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #d7f1ff 0%, #90ceff 44%, #4ca7ff 100%);
-}
-
-.auth-zig span:first-child {
-  transform: rotate(46deg);
-}
-
-.auth-zig span:last-child {
-  margin-left: -22px;
-  transform: rotate(-44deg);
-}
-
-.auth-zig-large {
-  top: 255px;
-  left: 220px;
-  transform: scale(1.15);
-}
-
-.auth-zig-small {
-  top: 392px;
-  left: 250px;
-  transform: scale(0.7);
-}
-
-.auth-curve {
-  position: absolute;
-  border-radius: 999px;
-  pointer-events: none;
-}
-
-.auth-curve-main {
-  right: 220px;
-  top: 150px;
-  width: 250px;
-  height: 260px;
-  border: 28px solid rgba(8, 57, 112, 0.46);
-  border-left-color: transparent;
-  border-top-color: transparent;
-  transform: rotate(18deg);
-  filter: blur(1.4px);
-}
-
-.auth-curve-bottom {
-  left: 256px;
-  bottom: -92px;
-  width: 320px;
-  height: 220px;
-  border: 24px solid rgba(157, 219, 255, 0.48);
-  border-right-color: transparent;
-  border-top-color: transparent;
-  transform: rotate(24deg);
-}
-
-.auth-wave-stack {
-  position: absolute;
-  right: 196px;
-  bottom: 108px;
-  display: grid;
-  gap: 18px;
-}
-
-.auth-wave-stack span {
-  display: block;
-  width: 110px;
-  height: 18px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #d7f3ff 0%, #93d6ff 40%, #64b7ff 100%);
-  transform: rotate(12deg);
-}
-
-.auth-wave-stack span:last-child {
-  margin-left: 28px;
+  background: url("/auth-stage-art.svg") center center / cover no-repeat;
 }
 
 .auth-form-card {
@@ -752,35 +663,11 @@ h5,
   max-width: 500px;
 }
 
-.auth-brand-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.auth-brand-logo {
-  width: 62px;
+.auth-card-logo {
+  display: block;
+  width: 104px;
   height: auto;
-  flex-shrink: 0;
-  filter: drop-shadow(0 10px 18px rgba(255, 119, 74, 0.2));
-}
-
-.auth-brand-name,
-.auth-brand-tagline {
-  margin: 0;
-}
-
-.auth-brand-name {
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-}
-
-.auth-brand-tagline {
-  color: rgba(236, 246, 255, 0.8);
-  font-size: 0.88rem;
+  margin-bottom: 12px;
 }
 
 .auth-form-head {
@@ -2162,53 +2049,14 @@ a.profile-post-menu-item {
     min-height: 640px;
   }
 
-  .auth-zig-large {
-    top: 130px;
-    left: 22px;
-    transform: scale(0.78);
-  }
-
-  .auth-zig-small {
-    top: 210px;
-    left: 40px;
-    transform: scale(0.5);
-  }
-
-  .auth-curve-main {
-    right: 28px;
-    top: 124px;
-    width: 150px;
-    height: 170px;
-    border-width: 18px;
-  }
-
-  .auth-curve-bottom {
-    left: 22px;
-    bottom: 50px;
-    width: 180px;
-    height: 120px;
-    border-width: 16px;
-  }
-
-  .auth-wave-stack {
-    right: 24px;
-    bottom: 72px;
-    gap: 14px;
-  }
-
-  .auth-wave-stack span {
-    width: 76px;
-    height: 14px;
-  }
-
   .auth-form-card {
     padding: 22px 18px 20px;
     border-radius: 24px;
     max-width: none;
   }
 
-  .auth-brand-logo {
-    width: 52px;
+  .auth-card-logo {
+    width: 90px;
   }
 
   .auth-form-head h1 {

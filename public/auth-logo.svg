@@ -1,12 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" role="img" aria-label="Delulu logo">
   <defs>
-    <linearGradient id="brandOrange" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f73a2f" />
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f03a2d" />
       <stop offset="48%" stop-color="#ff5832" />
-      <stop offset="100%" stop-color="#ff6d3f" />
+      <stop offset="100%" stop-color="#ff6c3d" />
     </linearGradient>
+    <mask id="logoCutouts">
+      <rect width="320" height="240" fill="#fff" />
+      <path fill="#000" d="M122 96h36c36 0 63 7 83 22 16 12 24 30 24 54 0 24-8 42-24 54-20 15-47 22-83 22h-36l12-29h19c27 0 48-4 61-12 12-8 18-19 18-35 0-16-6-27-18-35-13-8-34-12-61-12h-19l-12-29z" />
+      <path fill="#000" d="M81 90h61l-17 95c-8 42-32 76-70 95l-12 6 23-92c9-36 14-70 15-104z" />
+    </mask>
   </defs>
-  <path fill="url(#brandOrange)" d="M34 44c61 0 121 7 167 29 49 24 75 60 75 101s-26 77-75 101c-46 22-106 29-167 29l28-42c38 0 76-4 107-15 33-11 56-31 73-54 9-12 13-25 13-38s-4-26-13-38c-17-23-40-43-73-54-31-11-69-15-107-15L34 44z" />
-  <path fill="#ffffff" d="M121 95h38c36 0 64 7 84 22 17 13 26 31 26 57 0 25-9 44-26 57-20 15-48 22-84 22h-38l13-31h20c28 0 49-4 62-12 12-8 17-19 17-36 0-17-5-28-17-36-13-8-34-12-62-12h-20l-13-31z" />
-  <path fill="#ffffff" d="M79 88h55l-16 95c-7 43-33 78-72 97l-14 7 24-93c6-25 14-61 23-106z" />
+  <path
+    fill="url(#logoGradient)"
+    mask="url(#logoCutouts)"
+    d="M36 45c62 0 120 7 166 28 50 24 77 60 77 102s-27 78-77 102c-46 22-104 29-166 29l28-42c39 0 77-5 108-15 31-11 56-29 72-53 9-12 13-25 13-39 0-14-4-27-13-39-16-24-41-42-72-53-31-10-69-15-108-15L36 45z"
+  />
 </svg>

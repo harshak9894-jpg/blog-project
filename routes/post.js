@@ -139,7 +139,9 @@ router.get("/", asyncHandler(async (req, res) => {
       return post;
     });
 
-  res.render("home", {
+  const homeView = currentUser ? "home" : "guestHome";
+
+  res.render(homeView, {
     posts: visiblePosts,
     activeCategory: category || "all",
     activeTab: tab

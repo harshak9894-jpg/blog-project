@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Delulu</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/style.css" rel="stylesheet">
+</head>
+<body class="app-body guest-home-body">
+  <main class="guest-home-shell">
+    <header class="guest-home-navbar">
+      <div class="guest-home-brand">
+        <a href="/" class="guest-home-brand-link" aria-label="Delulu Home">
+          <img src="/delulu-brand.png" alt="Delulu" class="guest-home-brand-image">
+        </a>
+      </div>
+
+      <nav class="guest-home-nav">
+        <a href="/" class="guest-home-nav-link is-active">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2 3.8 10v10.2h5.4v-6.4h5.6v6.4h5.4V10L12 3.2Z" fill="currentColor"/></svg>
+          <span>HOME</span>
+        </a>
+      </nav>
+
+      <a href="/login" class="guest-home-login-btn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.4a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 2.4c-4 0-7.2 2.3-8.1 5.8a1 1 0 0 0 1 1.2h14.2a1 1 0 0 0 1-1.2c-.9-3.5-4.1-5.8-8.1-5.8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <span>Login</span>
+      </a>
+    </header>
+
+    <section class="guest-home-frame">
+      <% if (success.length > 0) { %>
+        <div class="alert alert-success"><%= success %></div>
+      <% } %>
+
+      <% if (error.length > 0) { %>
+        <div class="alert alert-danger"><%= error %></div>
+      <% } %>
+
+      <div class="guest-home-grid">
+        <div class="guest-feed-column">
+          <article class="guest-card guest-compose-card">
+            <div class="guest-author-row">
+              <div class="guest-avatar guest-avatar-lg"></div>
+              <div class="guest-author-copy">
+                <strong>@account_name</strong>
+              </div>
+            </div>
+
+            <div class="guest-compose-box">Post something...</div>
+
+            <div class="guest-compose-actions">
+              <div class="guest-action-metrics">
+                <div class="guest-action-chip heart">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3s-6.7-4.2-9.2-8.4C.8 8.5 2.3 4.7 6 4.4c2.1-.2 3.4.8 4.4 2.2 1-1.4 2.3-2.4 4.4-2.2 3.7.3 5.2 4.1 3.2 7.5-2.5 4.2-9.2 8.4-9.2 8.4Z" fill="currentColor"/></svg>
+                  <span>128</span>
+                </div>
+                <div class="guest-action-chip">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5c0 4.7-4.1 8.5-9.1 8.5-1.2 0-2.4-.2-3.5-.7L3 20.7l1.4-3.5A8 8 0 0 1 1.8 11.5C1.8 6.8 5.9 3 10.9 3s9.1 3.8 9.1 8.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                  <span>32</span>
+                </div>
+                <div class="guest-action-chip">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 9.7 14.3m11.3-11.3-7.5 18-3.8-7L2 10.2 21 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>45</span>
+                </div>
+              </div>
+
+              <div class="guest-divider"></div>
+
+              <div class="guest-action-links">
+                <span class="guest-action-link">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11m0 0 4.1-4.1M12 14.5l-4.1-4.1M4 18.7h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>Download</span>
+                </span>
+                <span class="guest-action-link save">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.7h12a1 1 0 0 1 1 1v15.6l-7-3.8-7 3.8V4.7a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                  <span>Save</span>
+                </span>
+                <button type="button" class="guest-more-btn" aria-label="More options">...</button>
+              </div>
+            </div>
+
+            <div class="guest-report-popover">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4m0 1h9.2l-1.8 3.6 1.8 3.6H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Report</span>
+            </div>
+          </article>
+
+          <% const guestPosts = posts.slice(0, 2); %>
+          <% if (guestPosts.length > 0) { %>
+            <% guestPosts.forEach((post, index) => { %>
+              <article class="guest-card guest-feed-card <%= post.media ? 'has-media' : '' %>">
+                <div class="guest-card-top">
+                  <div class="guest-author-row compact">
+                    <img src="<%= post.author.profilePic || '/uploads/profile/default-avatar.svg' %>"
+                         alt="Profile picture"
+                         class="guest-avatar-image">
+                    <div class="guest-author-copy">
+                      <strong>@<%= post.author.handle || post.author.username %></strong>
+                      <span><%= index === 0 ? '2h ago' : '5h ago' %></span>
+                    </div>
+                  </div>
+                  <button type="button" class="guest-dots-btn" aria-label="More actions">...</button>
+                </div>
+
+                <% if (post.media) { %>
+                  <div class="guest-media-row">
+                    <% if (post.mediaType === "image") { %>
+                      <img src="<%= post.media %>" alt="Post media" class="guest-inline-media">
+                    <% } else { %>
+                      <video class="guest-inline-media" muted playsinline controls>
+                        <source src="<%= post.media %>" type="video/mp4">
+                      </video>
+                    <% } %>
+                    <div class="guest-media-copy">
+                      <h3><%= post.title %></h3>
+                      <p><%= post.content %></p>
+                    </div>
+                  </div>
+                <% } else { %>
+                  <div class="guest-text-copy">
+                    <p><%= post.content %></p>
+                  </div>
+                <% } %>
+
+                <div class="guest-post-actions">
+                  <span class="guest-inline-stat heart">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3s-6.7-4.2-9.2-8.4C.8 8.5 2.3 4.7 6 4.4c2.1-.2 3.4.8 4.4 2.2 1-1.4 2.3-2.4 4.4-2.2 3.7.3 5.2 4.1 3.2 7.5-2.5 4.2-9.2 8.4-9.2 8.4Z" fill="currentColor"/></svg>
+                    <span><%= post.likes.length %></span>
+                  </span>
+                  <span class="guest-inline-stat">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5c0 4.7-4.1 8.5-9.1 8.5-1.2 0-2.4-.2-3.5-.7L3 20.7l1.4-3.5A8 8 0 0 1 1.8 11.5C1.8 6.8 5.9 3 10.9 3s9.1 3.8 9.1 8.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span><%= post.comments.length %></span>
+                  </span>
+                  <span class="guest-inline-stat">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 9.7 14.3m11.3-11.3-7.5 18-3.8-7L2 10.2 21 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span><%= Math.max(post.comments.length + 13, 32) %></span>
+                  </span>
+                  <div class="guest-divider"></div>
+                  <% if (post.media) { %>
+                    <a href="<%= post.media %>" download class="guest-action-link">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11m0 0 4.1-4.1M12 14.5l-4.1-4.1M4 18.7h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span>Download</span>
+                    </a>
+                  <% } else { %>
+                    <span class="guest-action-link">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11m0 0 4.1-4.1M12 14.5l-4.1-4.1M4 18.7h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span>Download</span>
+                    </span>
+                  <% } %>
+                  <span class="guest-action-link save">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.7h12a1 1 0 0 1 1 1v15.6l-7-3.8-7 3.8V4.7a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span>Save</span>
+                  </span>
+                </div>
+              </article>
+            <% }) %>
+          <% } else { %>
+            <article class="guest-card guest-feed-card">
+              <div class="guest-card-top">
+                <div class="guest-author-row compact">
+                  <div class="guest-avatar guest-avatar-md"></div>
+                  <div class="guest-author-copy">
+                    <strong>@account_name</strong>
+                    <span>2h ago</span>
+                  </div>
+                </div>
+                <button type="button" class="guest-dots-btn" aria-label="More actions">...</button>
+              </div>
+
+              <div class="guest-text-copy">
+                <p>This is a sample post. Welcome to Delulu!</p>
+              </div>
+
+              <div class="guest-post-actions">
+                <span class="guest-inline-stat heart">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3s-6.7-4.2-9.2-8.4C.8 8.5 2.3 4.7 6 4.4c2.1-.2 3.4.8 4.4 2.2 1-1.4 2.3-2.4 4.4-2.2 3.7.3 5.2 4.1 3.2 7.5-2.5 4.2-9.2 8.4-9.2 8.4Z" fill="currentColor"/></svg>
+                  <span>128</span>
+                </span>
+                <span class="guest-inline-stat">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5c0 4.7-4.1 8.5-9.1 8.5-1.2 0-2.4-.2-3.5-.7L3 20.7l1.4-3.5A8 8 0 0 1 1.8 11.5C1.8 6.8 5.9 3 10.9 3s9.1 3.8 9.1 8.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                  <span>32</span>
+                </span>
+                <span class="guest-inline-stat">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 9.7 14.3m11.3-11.3-7.5 18-3.8-7L2 10.2 21 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>45</span>
+                </span>
+                <div class="guest-divider"></div>
+                <span class="guest-action-link">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11m0 0 4.1-4.1M12 14.5l-4.1-4.1M4 18.7h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>Download</span>
+                </span>
+                <span class="guest-action-link save">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.7h12a1 1 0 0 1 1 1v15.6l-7-3.8-7 3.8V4.7a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                  <span>Save</span>
+                </span>
+              </div>
+            </article>
+
+            <article class="guest-card guest-feed-card has-media">
+              <div class="guest-card-top">
+                <div class="guest-author-row compact">
+                  <div class="guest-avatar guest-avatar-md"></div>
+                  <div class="guest-author-copy">
+                    <strong>@account_name</strong>
+                    <span>5h ago</span>
+                  </div>
+                </div>
+                <button type="button" class="guest-dots-btn" aria-label="More actions">...</button>
+              </div>
+
+              <div class="guest-media-row">
+                <div class="guest-video-preview">
+                  <div class="guest-video-play">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6.5v11l9-5.5-9-5.5Z" fill="currentColor"/></svg>
+                  </div>
+                  <div class="guest-video-duration">0:45</div>
+                </div>
+                <div class="guest-media-copy">
+                  <h3>Beautiful Nature</h3>
+                  <p>A short video of nature and calm environment.</p>
+                </div>
+              </div>
+
+              <div class="guest-post-actions">
+                <span class="guest-inline-stat heart">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3s-6.7-4.2-9.2-8.4C.8 8.5 2.3 4.7 6 4.4c2.1-.2 3.4.8 4.4 2.2 1-1.4 2.3-2.4 4.4-2.2 3.7.3 5.2 4.1 3.2 7.5-2.5 4.2-9.2 8.4-9.2 8.4Z" fill="currentColor"/></svg>
+                  <span>256</span>
+                </span>
+                <span class="guest-inline-stat">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5c0 4.7-4.1 8.5-9.1 8.5-1.2 0-2.4-.2-3.5-.7L3 20.7l1.4-3.5A8 8 0 0 1 1.8 11.5C1.8 6.8 5.9 3 10.9 3s9.1 3.8 9.1 8.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                  <span>64</span>
+                </span>
+                <span class="guest-inline-stat">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 9.7 14.3m11.3-11.3-7.5 18-3.8-7L2 10.2 21 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>78</span>
+                </span>
+                <div class="guest-divider"></div>
+                <span class="guest-action-link">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11m0 0 4.1-4.1M12 14.5l-4.1-4.1M4 18.7h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>Download</span>
+                </span>
+                <span class="guest-action-link save">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.7h12a1 1 0 0 1 1 1v15.6l-7-3.8-7 3.8V4.7a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                  <span>Save</span>
+                </span>
+              </div>
+            </article>
+          <% } %>
+        </div>
+
+        <aside class="guest-side-column">
+          <section class="guest-side-card">
+            <div class="guest-side-head">
+              <h2>Latest</h2>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6.7 9.2 5.3 5.3 5.3-5.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="guest-select-list blue">
+              <div class="guest-select-item is-active">
+                <span>Latest</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.3 4.1 4.1L19 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="guest-select-item"><span>Old</span></div>
+              <div class="guest-select-item"><span>Popular</span></div>
+            </div>
+          </section>
+
+          <section class="guest-side-card warm">
+            <div class="guest-side-head">
+              <h2>General</h2>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6.7 9.2 5.3 5.3 5.3-5.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="guest-select-list warm">
+              <div class="guest-select-item is-active">
+                <span>General</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.3 4.1 4.1L19 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="guest-select-item"><span>Videos</span></div>
+              <div class="guest-select-item"><span>Posts</span></div>
+            </div>
+          </section>
+
+          <section class="guest-side-card guest-login-card">
+            <div class="guest-login-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.4a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 2.4c-4 0-7.2 2.3-8.1 5.8a1 1 0 0 0 1 1.2h14.2a1 1 0 0 0 1-1.2c-.9-3.5-4.1-5.8-8.1-5.8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Login</h3>
+            <p>Login to like, comment and share posts.</p>
+            <a href="/login" class="guest-side-login-link">Go to login</a>
+          </section>
+        </aside>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

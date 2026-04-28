@@ -663,11 +663,25 @@ h5,
   max-width: 500px;
 }
 
+.auth-brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
 .auth-card-logo {
   display: block;
-  width: 104px;
+  width: 76px;
   height: auto;
-  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.auth-brand-name {
+  color: #ffffff;
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
 }
 
 .auth-form-head {
@@ -1919,15 +1933,22 @@ a.profile-post-menu-item {
 .guest-home-brand-link {
   display: inline-flex;
   align-items: center;
+  gap: 12px;
   text-decoration: none;
 }
 
-.guest-home-brand-image {
-  width: 258px;
-  height: 82px;
-  object-fit: cover;
-  object-position: center 58%;
-  border-radius: 18px;
+.guest-home-brand-mark {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.guest-home-brand-word {
+  color: #17254d;
+  font-size: clamp(1.7rem, 2.4vw, 2.35rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
 }
 
 .guest-home-nav {
@@ -2178,6 +2199,38 @@ a.profile-post-menu-item {
   line-height: 1;
 }
 
+.guest-card-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 168px;
+  padding: 10px;
+  border: 1px solid rgba(202, 217, 245, 0.95);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 16px 34px rgba(33, 61, 118, 0.11);
+  z-index: 20;
+}
+
+.guest-card-menu-item {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 44px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: #20345f;
+  font-weight: 700;
+  text-align: left;
+}
+
+.guest-card-menu-item:hover {
+  background: #eef5ff;
+}
+
 .guest-report-popover {
   position: absolute;
   right: 26px;
@@ -2208,6 +2261,11 @@ a.profile-post-menu-item {
   margin-bottom: 14px;
 }
 
+.guest-post-tools {
+  position: relative;
+  flex-shrink: 0;
+}
+
 .guest-text-copy p,
 .guest-media-copy p,
 .guest-login-card p {
@@ -2222,8 +2280,20 @@ a.profile-post-menu-item {
   color: #273a67;
 }
 
+.guest-post-title {
+  margin: 0 0 10px;
+  color: #15264b;
+  font-size: 1.18rem;
+}
+
 .guest-post-actions {
   margin-top: 20px;
+}
+
+.guest-post-actions button {
+  border: none;
+  background: transparent;
+  padding: 0;
 }
 
 .guest-media-row {
@@ -2322,11 +2392,36 @@ a.profile-post-menu-item {
   color: #1a2f58;
 }
 
+.guest-dropdown-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+}
+
+.guest-dropdown-toggle svg {
+  width: 24px;
+  height: 24px;
+}
+
+.guest-filter-form {
+  display: grid;
+  gap: 18px;
+}
+
 .guest-select-list {
   border: 1px solid rgba(200, 217, 245, 0.95);
   border-radius: 18px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.86);
+  transition: max-height 0.2s ease, opacity 0.2s ease;
 }
 
 .guest-select-item {
@@ -2339,10 +2434,20 @@ a.profile-post-menu-item {
   border-top: 1px solid rgba(213, 226, 247, 0.9);
   color: #223764;
   font-size: 0.98rem;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  width: 100%;
+  text-align: left;
 }
 
 .guest-select-item:first-child {
   border-top: none;
+}
+
+.guest-select-list.is-collapsed .guest-select-item:not(.is-active) {
+  display: none;
 }
 
 .guest-select-list.blue .guest-select-item.is-active {
@@ -2583,9 +2688,14 @@ a.profile-post-menu-item {
     padding: 14px 10px 20px;
   }
 
-  .guest-home-brand-image {
-    width: 214px;
-    height: 70px;
+  .guest-home-brand-mark {
+    width: 48px;
+    height: 48px;
+  }
+
+  .guest-home-brand-word {
+    font-size: 1.45rem;
+    letter-spacing: 0.06em;
   }
 
   .guest-home-frame {
@@ -2631,7 +2741,11 @@ a.profile-post-menu-item {
   }
 
   .auth-card-logo {
-    width: 90px;
+    width: 66px;
+  }
+
+  .auth-brand-name {
+    font-size: 1.18rem;
   }
 
   .auth-form-head h1 {

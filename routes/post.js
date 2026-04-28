@@ -1,12 +1,14 @@
 const express = require("express");
 const Post = require("../models/Post");
 const User = require("../models/User");
+const Report = require("../models/Report");
 const multer = require("multer");
 const asyncHandler = require("../utils/asyncHandler");
 const { storeUploadedFile } = require("../utils/mediaStorage");
 const { requireLogin, requireLoginJson } = require("../middleware/auth");
 
 const router = express.Router();
+const REPORT_ADMIN_EMAIL = process.env.ADMIN_EMAIL?.trim().toLowerCase() || "";
 
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
@@ -45,6 +47,127 @@ function escapeRegex(string) {
   return String(string).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+function normalizeTab(value, isLoggedIn) {
+  const allowedTabs = isLoggedIn
+    ? ["latest", "popular", "following", "old"]
+    : ["latest", "popular", "old"];
+
+  return allowedTabs.includes(value) ? value : "latest";
+}
+
+function normalizeCategory(value, isLoggedIn) {
+  if (!value) {
+    return isLoggedIn ? "all" : "general";
+  }
+
+  const allowedCategories = isLoggedIn
+    ? ["all", "general", "photo", "video", "discussion", "posts", "videos"]
+    : ["general", "videos", "posts"];
+
+  return allowedCategories.includes(value) ? value : (isLoggedIn ? "all" : "general");
+}
+
+function buildCategoryCondition(category) {
+  switch (category) {
+    case "photo":
+      return {
+        $or: [
+          { category: "photo" },
+          { mediaType: "image" }
+        ]
+      };
+    case "video":
+    case "videos":
+      return {
+        $or: [
+          { category: "video" },
+          { mediaType: "video" }
+        ]
+      };
+    case "discussion":
+      return { category: "discussion" };
+    case "posts":
+      return { mediaType: { $ne: "video" } };
+    case "general":
+    case "all":
+    default:
+      return null;
+  }
+}
+
+function getGuestTabLabel(tab) {
+  return {
+    latest: "Latest",
+    old: "Old",
+    popular: "Popular"
+  }[tab] || "Latest";
+}
+
+function getGuestCategoryLabel(category) {
+  return {
+    general: "General",
+    videos: "Videos",
+    posts: "Posts"
+  }[category] || "General";
+}
+
+function getReportReason(value) {
+  return String(value || "")
+    .trim()
+    .slice(0, 500) || "Reported from public feed";
+}
+
+function formatRelativeTime(value) {
+  const createdAt = new Date(value);
+  const diffMs = Date.now() - createdAt.getTime();
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+
+  if (diffMs < hour) {
+    return `${Math.max(1, Math.floor(diffMs / minute))}m ago`;
+  }
+
+  if (diffMs < day) {
+    return `${Math.floor(diffMs / hour)}h ago`;
+  }
+
+  if (diffMs < 7 * day) {
+    return `${Math.floor(diffMs / day)}d ago`;
+  }
+
+  return createdAt.toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short"
+  });
+}
+
+const requireReportAdmin = asyncHandler(async (req, res, next) => {
+  if (!req.session.userId) {
+    req.flash("error", "Please login first");
+    return res.redirect("/login");
+  }
+
+  if (!REPORT_ADMIN_EMAIL) {
+    return res.status(403).render("error", {
+      message: "Admin reports access is not configured yet.",
+      statusCode: 403
+    });
+  }
+
+  const currentUser = await User.findById(req.session.userId).select("email username displayName");
+
+  if (!currentUser || String(currentUser.email || "").toLowerCase() !== REPORT_ADMIN_EMAIL) {
+    return res.status(403).render("error", {
+      message: "You are not allowed to access reports.",
+      statusCode: 403
+    });
+  }
+
+  req.reportAdminUser = currentUser;
+  next();
+});
+
 async function createNotification({ recipientId, actorId, type, message, postId = null }) {
   if (!recipientId || !actorId || recipientId.toString() === actorId.toString()) {
     return;
@@ -67,11 +190,13 @@ router.get("/", asyncHandler(async (req, res) => {
   const rawSearch = req.query.search;
   const search = (typeof rawSearch === "string" ? rawSearch : Array.isArray(rawSearch) ? rawSearch[0] : "")
     ?.trim() || "";
-  const category = req.query.category?.trim();
-  const tab = req.query.tab?.trim() || "latest";
+  const currentUserId = req.session.userId;
   const currentUser = req.session.userId
     ? await User.findById(req.session.userId).select("following savedPosts")
     : null;
+  const isLoggedIn = Boolean(currentUserId);
+  const tab = normalizeTab(req.query.tab?.trim(), isLoggedIn);
+  const category = normalizeCategory(req.query.category?.trim(), isLoggedIn);
 
   const query = {};
   const andConditions = [];
@@ -87,8 +212,10 @@ router.get("/", asyncHandler(async (req, res) => {
     });
   }
 
-  if (category && category !== "all") {
-    andConditions.push({ category });
+  const categoryCondition = buildCategoryCondition(category);
+
+  if (categoryCondition) {
+    andConditions.push(categoryCondition);
   }
 
   if (tab === "following") {
@@ -122,7 +249,7 @@ router.get("/", asyncHandler(async (req, res) => {
   let posts = await Post.find(query)
     .populate("author")
     .populate("comments.user")
-    .sort({ createdAt: -1 });
+    .sort(tab === "old" ? { createdAt: 1 } : { createdAt: -1 });
 
   if (tab === "popular") {
     posts = posts.sort((a, b) => {
@@ -136,6 +263,7 @@ router.get("/", asyncHandler(async (req, res) => {
     .filter((post) => post.author)
     .map((post) => {
       post.comments = post.comments.filter((comment) => comment.user);
+      post.relativeTime = formatRelativeTime(post.createdAt);
       return post;
     });
 
@@ -143,8 +271,10 @@ router.get("/", asyncHandler(async (req, res) => {
 
   res.render(homeView, {
     posts: visiblePosts,
-    activeCategory: category || "all",
-    activeTab: tab
+    activeCategory: category,
+    activeTab: tab,
+    guestTabLabel: getGuestTabLabel(tab),
+    guestCategoryLabel: getGuestCategoryLabel(category)
   });
 }));
 
@@ -344,6 +474,53 @@ router.post("/comment/:id", requireLoginJson, asyncHandler(async (req, res) => {
   });
 }));
 
+router.post("/report/:id", asyncHandler(async (req, res) => {
+  const post = await Post.findById(req.params.id)
+    .populate("author", "username displayName handle");
+
+  if (!post) {
+    return res.status(404).json({ error: "Post not found" });
+  }
+
+  let reporterName = "Guest";
+  let reporterEmail = "";
+  let reporterUser = null;
+
+  if (req.session.userId) {
+    const currentUser = await User.findById(req.session.userId)
+      .select("username displayName email");
+
+    if (currentUser) {
+      reporterUser = currentUser._id;
+      reporterName = currentUser.displayName || currentUser.username;
+      reporterEmail = currentUser.email || "";
+    }
+  }
+
+  await Report.create({
+    post: post._id,
+    postTitle: post.title,
+    postAuthorName: post.author
+      ? (post.author.displayName || post.author.username || "Unknown")
+      : "Unknown",
+    postAuthorHandle: post.author
+      ? (post.author.handle || post.author.username || "")
+      : "",
+    postUrl: `/post/${post._id}`,
+    reporterUser,
+    reporterName,
+    reporterEmail,
+    reason: getReportReason(req.body.reason)
+  });
+
+  if (req.accepts("json")) {
+    return res.json({ success: true });
+  }
+
+  req.flash("success", "Report submitted");
+  res.redirect("/");
+}));
+
 router.post("/comment-like/:postId/:commentId", requireLoginJson, asyncHandler(async (req, res) => {
   const [post, currentUser] = await Promise.all([
     Post.findById(req.params.postId),
@@ -488,6 +665,32 @@ router.get("/post/:id", asyncHandler(async (req, res) => {
   }
 
   res.render("singlePost", { post });
+}));
+
+router.get("/admin/reports", requireReportAdmin, asyncHandler(async (req, res) => {
+  const reports = await Report.find()
+    .sort({ createdAt: -1 })
+    .lean();
+
+  res.render("adminReports", {
+    reports,
+    adminEmail: REPORT_ADMIN_EMAIL
+  });
+}));
+
+router.post("/admin/reports/:id/resolve", requireReportAdmin, asyncHandler(async (req, res) => {
+  const report = await Report.findById(req.params.id);
+
+  if (!report) {
+    req.flash("error", "Report not found");
+    return res.redirect("/admin/reports");
+  }
+
+  report.status = "resolved";
+  await report.save();
+
+  req.flash("success", "Report marked as resolved");
+  res.redirect("/admin/reports");
 }));
 
 router.get("/download-post/:id", asyncHandler(async (req, res) => {

@@ -39,66 +39,6 @@
 
         <div class="public-feed-grid">
           <section class="public-feed-main">
-            <article class="public-card public-compose-card">
-              <div class="public-post-head">
-                <div class="public-author-lockup">
-                  <img src="/uploads/profile/default-avatar.svg" alt="Default profile" class="public-avatar public-avatar-lg">
-                  <div class="public-author-copy">
-                    <strong>@account_name</strong>
-                  </div>
-                </div>
-
-                <div class="public-menu-wrap">
-                  <button type="button"
-                          class="public-icon-menu public-menu-toggle"
-                          data-menu-id="guest-compose-menu"
-                          aria-label="Open menu">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>
-                  </button>
-                  <div class="public-menu-card" data-menu-for="guest-compose-menu" hidden>
-                    <a href="/register" class="public-menu-item text-decoration-none">Register new account</a>
-                  </div>
-                </div>
-              </div>
-
-              <a href="/login" class="public-compose-box text-decoration-none">
-                <span>Post something...</span>
-              </a>
-
-              <div class="public-action-row">
-                <div class="public-action-cluster">
-                  <a href="/login" class="public-action-item is-heart text-decoration-none" title="Login to like">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3s-6.6-4.1-9.1-8.2C.9 8.8 2.4 4.8 6 4.5c2.1-.2 3.5.8 4.5 2.2 1-1.4 2.4-2.4 4.5-2.2 3.6.3 5.1 4.3 3.1 7.6-2.5 4.1-9.1 8.2-9.1 8.2Z" fill="currentColor"/></svg>
-                    <span>Like</span>
-                  </a>
-                  <a href="/login" class="public-action-item text-decoration-none" title="Login to comment">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.1 11.6c0 4.7-4 8.4-9 8.4-1.2 0-2.4-.2-3.4-.7L3.4 20.7l1.4-3.5A8.1 8.1 0 0 1 2 11.6C2 6.9 6 3.2 11.1 3.2c5 0 9 3.7 9 8.4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-                    <span>Comment</span>
-                  </a>
-                  <button type="button"
-                          class="public-action-item public-share-btn"
-                          data-share-url="/"
-                          data-share-text="See what people are posting on Delulu">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 10 14m11-11-7.1 18-3.5-7.4L3 10.2 21 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span>Share</span>
-                  </button>
-                </div>
-
-                <span class="public-action-divider" aria-hidden="true"></span>
-
-                <div class="public-action-cluster">
-                  <a href="/login" class="public-action-item text-decoration-none" title="Login to create a downloadable post">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v10.6m0 0 4-4M12 14.1l-4-4M4.3 19h15.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span>Download</span>
-                  </a>
-                  <a href="/login" class="public-action-item is-save text-decoration-none" title="Login to save">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12a1 1 0 0 1 1 1v15.4l-7-3.8-7 3.8V4.8a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-                    <span>Save</span>
-                  </a>
-                </div>
-              </div>
-            </article>
-
             <% if (posts.length === 0) { %>
               <article class="public-card public-empty-card">
                 <div class="public-empty-icon" aria-hidden="true">

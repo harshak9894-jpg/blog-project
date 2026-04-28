@@ -6,249 +6,290 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="/style.css" rel="stylesheet">
 </head>
-<body class="app-body guest-home-body">
-  <main class="guest-home-shell">
-    <header class="guest-home-navbar">
-      <div class="guest-home-brand">
-        <a href="/" class="guest-home-brand-link" aria-label="Delulu Home">
-          <img src="/delulu-logo.png" alt="Delulu logo" class="guest-home-brand-mark">
-          <span class="guest-home-brand-word">DELULU</span>
+<body class="app-body public-feed-body">
+  <main class="public-feed-shell">
+    <section class="public-feed-board">
+      <header class="public-feed-header">
+        <a href="/" class="public-feed-brand" aria-label="Delulu Home">
+          <img src="/delulu-logo.png" alt="Delulu logo" class="public-feed-brand-mark">
+          <span class="public-feed-brand-word">DELULU</span>
         </a>
-      </div>
 
-      <nav class="guest-home-nav">
-        <a href="/" class="guest-home-nav-link is-active">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2 3.8 10v10.2h5.4v-6.4h5.6v6.4h5.4V10L12 3.2Z" fill="currentColor"/></svg>
-          <span>HOME</span>
+        <nav class="public-feed-nav" aria-label="Primary">
+          <a href="/" class="public-feed-nav-link is-active">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.1 3.7 10v10.4h5.7v-6.1h5.2v6.1h5.7V10L12 3.1Z" fill="currentColor"/></svg>
+            <span>HOME</span>
+          </a>
+        </nav>
+
+        <a href="/login" class="public-feed-login-btn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.3a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 2.6c-4.3 0-7.5 2.3-8.3 5.8a1 1 0 0 0 1 1.3h14.6a1 1 0 0 0 1-1.3c-.8-3.5-4-5.8-8.3-5.8Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg>
+          <span>Login</span>
         </a>
-      </nav>
+      </header>
 
-      <a href="/login" class="guest-home-login-btn">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.4a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 2.4c-4 0-7.2 2.3-8.1 5.8a1 1 0 0 0 1 1.2h14.2a1 1 0 0 0 1-1.2c-.9-3.5-4.1-5.8-8.1-5.8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-        <span>Login</span>
-      </a>
-    </header>
+      <section class="public-feed-stage">
+        <% if (success.length > 0) { %>
+          <div class="alert alert-success"><%= success %></div>
+        <% } %>
 
-    <section class="guest-home-frame">
-      <% if (success.length > 0) { %>
-        <div class="alert alert-success"><%= success %></div>
-      <% } %>
+        <% if (error.length > 0) { %>
+          <div class="alert alert-danger"><%= error %></div>
+        <% } %>
 
-      <% if (error.length > 0) { %>
-        <div class="alert alert-danger"><%= error %></div>
-      <% } %>
+        <div class="public-feed-grid">
+          <section class="public-feed-main">
+            <article class="public-card public-compose-card">
+              <div class="public-post-head">
+                <div class="public-author-lockup">
+                  <img src="/uploads/profile/default-avatar.svg" alt="Default profile" class="public-avatar public-avatar-lg">
+                  <div class="public-author-copy">
+                    <strong>@account_name</strong>
+                  </div>
+                </div>
 
-      <div class="guest-home-grid">
-        <div class="guest-feed-column">
-          <article class="guest-card guest-compose-card">
-            <div class="guest-author-row">
-              <img src="/uploads/profile/default-avatar.svg" alt="Default profile" class="guest-avatar-image guest-avatar-lg">
-              <div class="guest-author-copy">
-                <strong>@account_name</strong>
-              </div>
-            </div>
-
-            <a href="/login" class="guest-compose-box text-decoration-none">Post something...</a>
-
-            <div class="guest-compose-actions">
-              <div class="guest-action-metrics">
-                <a href="/login" class="guest-action-chip heart text-decoration-none">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3s-6.7-4.2-9.2-8.4C.8 8.5 2.3 4.7 6 4.4c2.1-.2 3.4.8 4.4 2.2 1-1.4 2.3-2.4 4.4-2.2 3.7.3 5.2 4.1 3.2 7.5-2.5 4.2-9.2 8.4-9.2 8.4Z" fill="currentColor"/></svg>
-                  <span>Like</span>
-                </a>
-                <a href="/login" class="guest-action-chip text-decoration-none">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5c0 4.7-4.1 8.5-9.1 8.5-1.2 0-2.4-.2-3.5-.7L3 20.7l1.4-3.5A8 8 0 0 1 1.8 11.5C1.8 6.8 5.9 3 10.9 3s9.1 3.8 9.1 8.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-                  <span>Comment</span>
-                </a>
-                <button type="button" class="guest-action-chip guest-share-btn" data-share-url="/" data-share-text="See what people are posting on Delulu">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 9.7 14.3m11.3-11.3-7.5 18-3.8-7L2 10.2 21 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span>Share</span>
-                </button>
+                <div class="public-menu-wrap">
+                  <button type="button"
+                          class="public-icon-menu public-menu-toggle"
+                          data-menu-id="guest-compose-menu"
+                          aria-label="Open menu">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>
+                  </button>
+                  <div class="public-menu-card" data-menu-for="guest-compose-menu" hidden>
+                    <a href="/register" class="public-menu-item text-decoration-none">Register new account</a>
+                  </div>
+                </div>
               </div>
 
-              <div class="guest-divider"></div>
+              <a href="/login" class="public-compose-box text-decoration-none">
+                <span>Post something...</span>
+              </a>
 
-              <div class="guest-action-links">
-                <a href="/login" class="guest-action-link text-decoration-none">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11m0 0 4.1-4.1M12 14.5l-4.1-4.1M4 18.7h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span>Download</span>
-                </a>
-                <a href="/login" class="guest-action-link save text-decoration-none">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.7h12a1 1 0 0 1 1 1v15.6l-7-3.8-7 3.8V4.7a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-                  <span>Save</span>
-                </a>
-                <button type="button" class="guest-more-btn guest-menu-toggle" data-menu-id="guest-compose-menu" aria-label="More options">...</button>
-              </div>
-            </div>
+              <div class="public-action-row">
+                <div class="public-action-cluster">
+                  <a href="/login" class="public-action-item is-heart text-decoration-none" title="Login to like">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3s-6.6-4.1-9.1-8.2C.9 8.8 2.4 4.8 6 4.5c2.1-.2 3.5.8 4.5 2.2 1-1.4 2.4-2.4 4.5-2.2 3.6.3 5.1 4.3 3.1 7.6-2.5 4.1-9.1 8.2-9.1 8.2Z" fill="currentColor"/></svg>
+                    <span>Like</span>
+                  </a>
+                  <a href="/login" class="public-action-item text-decoration-none" title="Login to comment">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.1 11.6c0 4.7-4 8.4-9 8.4-1.2 0-2.4-.2-3.4-.7L3.4 20.7l1.4-3.5A8.1 8.1 0 0 1 2 11.6C2 6.9 6 3.2 11.1 3.2c5 0 9 3.7 9 8.4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span>Comment</span>
+                  </a>
+                  <button type="button"
+                          class="public-action-item public-share-btn"
+                          data-share-url="/"
+                          data-share-text="See what people are posting on Delulu">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 10 14m11-11-7.1 18-3.5-7.4L3 10.2 21 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Share</span>
+                  </button>
+                </div>
 
-            <div class="guest-card-menu" data-menu-for="guest-compose-menu" hidden>
-              <button type="button" class="guest-card-menu-item guest-report-trigger" data-post-id="" data-post-title="General guest feed">Report</button>
-            </div>
-          </article>
+                <span class="public-action-divider" aria-hidden="true"></span>
 
-          <% if (posts.length === 0) { %>
-            <article class="guest-card guest-feed-card">
-              <div class="guest-text-copy">
-                <p>No public posts yet. Once you log in and create one, it will show up here.</p>
+                <div class="public-action-cluster">
+                  <a href="/login" class="public-action-item text-decoration-none" title="Login to create a downloadable post">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v10.6m0 0 4-4M12 14.1l-4-4M4.3 19h15.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Download</span>
+                  </a>
+                  <a href="/login" class="public-action-item is-save text-decoration-none" title="Login to save">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12a1 1 0 0 1 1 1v15.4l-7-3.8-7 3.8V4.8a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span>Save</span>
+                  </a>
+                </div>
               </div>
             </article>
-          <% } %>
 
-          <% posts.forEach(post => { %>
-            <article class="guest-card guest-feed-card <%= post.media ? 'has-media' : '' %>">
-              <div class="guest-card-top">
-                <div class="guest-author-row compact">
-                  <img src="<%= post.author.profilePic || '/uploads/profile/default-avatar.svg' %>"
-                       alt="Profile picture"
-                       class="guest-avatar-image guest-avatar-md">
-                  <div class="guest-author-copy">
-                    <strong>@<%= post.author.handle || post.author.username %></strong>
-                    <span><%= post.relativeTime %></span>
-                  </div>
+            <% if (posts.length === 0) { %>
+              <article class="public-card public-empty-card">
+                <div class="public-empty-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M4 6.8A2.8 2.8 0 0 1 6.8 4h10.4A2.8 2.8 0 0 1 20 6.8v10.4a2.8 2.8 0 0 1-2.8 2.8H6.8A2.8 2.8 0 0 1 4 17.2V6.8Zm4.6 2.5h6.8m-6.8 4.1h6.8m-6.8 4.1h4.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
                 </div>
+                <h2>No public posts yet</h2>
+                <p>Login and create the first post to start the feed with photos, videos, and discussions.</p>
+                <a href="/login" class="public-primary-btn text-decoration-none">Go to login</a>
+              </article>
+            <% } %>
 
-                <div class="guest-post-tools">
-                  <button type="button"
-                          class="guest-dots-btn guest-menu-toggle"
-                          data-menu-id="post-menu-<%= post._id %>"
-                          aria-label="More actions">...</button>
-                  <div class="guest-card-menu" data-menu-for="post-menu-<%= post._id %>" hidden>
+            <% posts.forEach(post => { %>
+              <article class="public-card public-post-card">
+                <div class="public-post-head">
+                  <div class="public-author-lockup">
+                    <img src="<%= post.author.profilePic || '/uploads/profile/default-avatar.svg' %>"
+                         alt="Profile picture"
+                         class="public-avatar public-avatar-md">
+                    <div class="public-author-copy">
+                      <strong>@<%= post.author.handle || post.author.username %></strong>
+                      <span><%= post.relativeTime %></span>
+                    </div>
+                  </div>
+
+                  <div class="public-menu-wrap">
                     <button type="button"
-                            class="guest-card-menu-item guest-report-trigger"
-                            data-post-id="<%= post._id %>"
-                            data-post-title="<%= post.title %>">
-                      Report
+                            class="public-icon-menu public-menu-toggle"
+                            data-menu-id="post-menu-<%= post._id %>"
+                            aria-label="Open menu">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>
                     </button>
+                    <div class="public-menu-card" data-menu-for="post-menu-<%= post._id %>" hidden>
+                      <button type="button"
+                              class="public-menu-item public-report-trigger"
+                              data-post-id="<%= post._id %>"
+                              data-post-title="<%= post.title %>">
+                        Report
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <% if (post.media) { %>
-                <div class="guest-media-row">
-                  <% if (post.mediaType === "image") { %>
-                    <img src="<%= post.media %>" alt="Post media" class="guest-inline-media">
-                  <% } else { %>
-                    <video class="guest-inline-media" muted playsinline controls>
-                      <source src="<%= post.media %>" type="video/mp4">
-                    </video>
-                  <% } %>
-                  <div class="guest-media-copy">
+                <% if (post.media) { %>
+                  <div class="public-post-body with-media">
+                    <div class="public-media-wrap">
+                      <% if (post.mediaType === "image") { %>
+                        <img src="<%= post.media %>" alt="Post media" class="public-post-media">
+                      <% } else { %>
+                        <video class="public-post-media" controls muted playsinline>
+                          <source src="<%= post.media %>" type="video/mp4">
+                        </video>
+                      <% } %>
+                    </div>
+                    <div class="public-post-copy">
+                      <h3><%= post.title %></h3>
+                      <p><%= post.content %></p>
+                    </div>
+                  </div>
+                <% } else { %>
+                  <div class="public-post-copy public-post-copy-text">
                     <h3><%= post.title %></h3>
                     <p><%= post.content %></p>
                   </div>
-                </div>
-              <% } else { %>
-                <div class="guest-text-copy">
-                  <h3 class="guest-post-title"><%= post.title %></h3>
-                  <p><%= post.content %></p>
-                </div>
-              <% } %>
-
-              <div class="guest-post-actions">
-                <a href="/login" class="guest-inline-stat heart text-decoration-none" title="Login to like">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3s-6.7-4.2-9.2-8.4C.8 8.5 2.3 4.7 6 4.4c2.1-.2 3.4.8 4.4 2.2 1-1.4 2.3-2.4 4.4-2.2 3.7.3 5.2 4.1 3.2 7.5-2.5 4.2-9.2 8.4-9.2 8.4Z" fill="currentColor"/></svg>
-                  <span><%= post.likes.length %></span>
-                </a>
-                <a href="/post/<%= post._id %>#comments" class="guest-inline-stat text-decoration-none" title="View comments">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5c0 4.7-4.1 8.5-9.1 8.5-1.2 0-2.4-.2-3.5-.7L3 20.7l1.4-3.5A8 8 0 0 1 1.8 11.5C1.8 6.8 5.9 3 10.9 3s9.1 3.8 9.1 8.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-                  <span><%= post.comments.length %></span>
-                </a>
-                <button type="button"
-                        class="guest-inline-stat guest-share-btn"
-                        data-share-url="/post/<%= post._id %>"
-                        data-share-text="<%= post.title %>">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 9.7 14.3m11.3-11.3-7.5 18-3.8-7L2 10.2 21 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span><%= Math.max(post.comments.length + post.likes.length, 1) %></span>
-                </button>
-                <div class="guest-divider"></div>
-                <% if (post.media) { %>
-                  <a href="<%= post.media %>" download class="guest-action-link text-decoration-none">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11m0 0 4.1-4.1M12 14.5l-4.1-4.1M4 18.7h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span>Download</span>
-                  </a>
-                <% } else { %>
-                  <a href="/post/<%= post._id %>" class="guest-action-link text-decoration-none">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11m0 0 4.1-4.1M12 14.5l-4.1-4.1M4 18.7h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span>Open</span>
-                  </a>
                 <% } %>
-                <a href="/login" class="guest-action-link save text-decoration-none" title="Login to save">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.7h12a1 1 0 0 1 1 1v15.6l-7-3.8-7 3.8V4.7a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-                  <span>Save</span>
-                </a>
-              </div>
-            </article>
-          <% }) %>
-        </div>
 
-        <aside class="guest-side-column">
-          <form action="/" method="GET" class="guest-side-card guest-filter-form" id="guest-sort-form">
-            <input type="hidden" name="category" value="<%= activeCategory %>">
-            <div class="guest-side-head">
-              <button type="button" class="guest-dropdown-toggle" data-dropdown-id="guest-sort-dropdown">
-                <span><%= guestTabLabel %></span>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6.7 9.2 5.3 5.3 5.3-5.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
-            </div>
-            <div class="guest-select-list blue" data-dropdown-panel="guest-sort-dropdown">
-              <% [{ value: "latest", label: "Latest" }, { value: "old", label: "Old" }, { value: "popular", label: "Popular" }].forEach(option => { %>
-                <button type="submit"
-                        name="tab"
-                        value="<%= option.value %>"
-                        class="guest-select-item <%= activeTab === option.value ? 'is-active' : '' %>">
-                  <span><%= option.label %></span>
-                  <% if (activeTab === option.value) { %>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.3 4.1 4.1L19 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <% } %>
-                </button>
-              <% }) %>
-            </div>
-          </form>
+                <div class="public-action-row public-action-row-post">
+                  <div class="public-action-cluster">
+                    <a href="/login" class="public-stat-item is-heart text-decoration-none" title="Login to like">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3s-6.6-4.1-9.1-8.2C.9 8.8 2.4 4.8 6 4.5c2.1-.2 3.5.8 4.5 2.2 1-1.4 2.4-2.4 4.5-2.2 3.6.3 5.1 4.3 3.1 7.6-2.5 4.1-9.1 8.2-9.1 8.2Z" fill="currentColor"/></svg>
+                      <span><%= post.likes.length %></span>
+                    </a>
+                    <a href="/login" class="public-stat-item text-decoration-none" title="Login to comment">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.1 11.6c0 4.7-4 8.4-9 8.4-1.2 0-2.4-.2-3.4-.7L3.4 20.7l1.4-3.5A8.1 8.1 0 0 1 2 11.6C2 6.9 6 3.2 11.1 3.2c5 0 9 3.7 9 8.4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                      <span><%= post.comments.length %></span>
+                    </a>
+                    <button type="button"
+                            class="public-stat-item public-share-btn"
+                            data-share-url="/post/<%= post._id %>"
+                            data-share-text="<%= post.title %>">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 10 14m11-11-7.1 18-3.5-7.4L3 10.2 21 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span><%= Math.max(post.comments.length + post.likes.length, 1) %></span>
+                    </button>
+                  </div>
 
-          <form action="/" method="GET" class="guest-side-card warm guest-filter-form" id="guest-category-form">
-            <input type="hidden" name="tab" value="<%= activeTab %>">
-            <div class="guest-side-head">
-              <button type="button" class="guest-dropdown-toggle warm" data-dropdown-id="guest-category-dropdown">
-                <span><%= guestCategoryLabel %></span>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6.7 9.2 5.3 5.3 5.3-5.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
-            </div>
-            <div class="guest-select-list warm" data-dropdown-panel="guest-category-dropdown">
-              <% [{ value: "general", label: "General" }, { value: "videos", label: "Videos" }, { value: "posts", label: "Posts" }].forEach(option => { %>
-                <button type="submit"
-                        name="category"
-                        value="<%= option.value %>"
-                        class="guest-select-item <%= activeCategory === option.value ? 'is-active' : '' %>">
-                  <span><%= option.label %></span>
-                  <% if (activeCategory === option.value) { %>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.3 4.1 4.1L19 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <% } %>
-                </button>
-              <% }) %>
-            </div>
-          </form>
+                  <span class="public-action-divider" aria-hidden="true"></span>
 
-          <section class="guest-side-card guest-login-card">
-            <div class="guest-login-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.4a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 2.4c-4 0-7.2 2.3-8.1 5.8a1 1 0 0 0 1 1.2h14.2a1 1 0 0 0 1-1.2c-.9-3.5-4.1-5.8-8.1-5.8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-            </div>
-            <h3>Login</h3>
-            <p>Login to like, comment and save posts with your own profile.</p>
-            <a href="/login" class="guest-side-login-link">Go to login</a>
+                  <div class="public-action-cluster">
+                    <% if (post.media) { %>
+                      <a href="<%= post.media %>" download class="public-action-item text-decoration-none">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v10.6m0 0 4-4M12 14.1l-4-4M4.3 19h15.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span>Download</span>
+                      </a>
+                    <% } else { %>
+                      <a href="/post/<%= post._id %>" class="public-action-item text-decoration-none">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v10.6m0 0 4-4M12 14.1l-4-4M4.3 19h15.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span>Open</span>
+                      </a>
+                    <% } %>
+                    <a href="/login" class="public-action-item is-save text-decoration-none" title="Login to save">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12a1 1 0 0 1 1 1v15.4l-7-3.8-7 3.8V4.8a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                      <span>Save</span>
+                    </a>
+                  </div>
+                </div>
+              </article>
+            <% }) %>
           </section>
-        </aside>
-      </div>
+
+          <aside class="public-feed-sidebar">
+            <form action="/" method="GET" class="public-side-card public-filter-card" id="public-sort-form">
+              <input type="hidden" name="category" value="<%= activeCategory %>">
+              <button type="button"
+                      class="public-filter-toggle"
+                      data-dropdown-id="public-sort-dropdown"
+                      aria-expanded="false">
+                <span><%= guestTabLabel %></span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6.8 9.5 5.2 5.2 5.2-5.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+
+              <div class="public-filter-list" data-dropdown-panel="public-sort-dropdown" hidden>
+                <% [{ value: "latest", label: "Latest" }, { value: "old", label: "Old" }, { value: "popular", label: "Popular" }].forEach(option => { %>
+                  <button type="submit"
+                          name="tab"
+                          value="<%= option.value %>"
+                          class="public-filter-option <%= activeTab === option.value ? 'is-active is-blue' : '' %>">
+                    <span><%= option.label %></span>
+                    <% if (activeTab === option.value) { %>
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4 4L19 6.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <% } %>
+                  </button>
+                <% }) %>
+              </div>
+            </form>
+
+            <form action="/" method="GET" class="public-side-card public-filter-card public-filter-card-warm" id="public-category-form">
+              <input type="hidden" name="tab" value="<%= activeTab %>">
+              <button type="button"
+                      class="public-filter-toggle"
+                      data-dropdown-id="public-category-dropdown"
+                      aria-expanded="false">
+                <span><%= guestCategoryLabel %></span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6.8 9.5 5.2 5.2 5.2-5.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+
+              <div class="public-filter-list" data-dropdown-panel="public-category-dropdown" hidden>
+                <% [{ value: "general", label: "General" }, { value: "videos", label: "Videos" }, { value: "posts", label: "Posts" }].forEach(option => { %>
+                  <button type="submit"
+                          name="category"
+                          value="<%= option.value %>"
+                          class="public-filter-option <%= activeCategory === option.value ? 'is-active is-warm' : '' %>">
+                    <span><%= option.label %></span>
+                    <% if (activeCategory === option.value) { %>
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4 4L19 6.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <% } %>
+                  </button>
+                <% }) %>
+              </div>
+            </form>
+
+            <section class="public-side-card public-login-card">
+              <div class="public-login-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.3a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 2.6c-4.3 0-7.5 2.3-8.3 5.8a1 1 0 0 0 1 1.3h14.6a1 1 0 0 0 1-1.3c-.8-3.5-4-5.8-8.3-5.8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+              </div>
+              <h3>Login</h3>
+              <p>Login to like, comment and save posts with your own profile.</p>
+              <a href="/login" class="public-primary-btn text-decoration-none">Go to login</a>
+            </section>
+          </aside>
+        </div>
+      </section>
     </section>
   </main>
 
   <script>
-    function closeGuestMenus() {
-      document.querySelectorAll(".guest-card-menu").forEach((menu) => {
+    function closePublicMenus() {
+      document.querySelectorAll(".public-menu-card").forEach((menu) => {
         menu.hidden = true;
       });
     }
 
-    function shareGuestPost(url, text) {
+    function closePublicDropdowns() {
+      document.querySelectorAll("[data-dropdown-panel]").forEach((panel) => {
+        panel.hidden = true;
+      });
+
+      document.querySelectorAll(".public-filter-toggle").forEach((button) => {
+        button.setAttribute("aria-expanded", "false");
+      });
+    }
+
+    function sharePublicPost(url, text) {
       const finalUrl = url.startsWith("http") ? url : window.location.origin + url;
 
       if (navigator.share) {
@@ -263,7 +304,9 @@
       if (navigator.clipboard) {
         navigator.clipboard.writeText(finalUrl)
           .then(() => alert("Link copied to clipboard"))
-          .catch(() => window.open("https://wa.me/?text=" + encodeURIComponent(text + " " + finalUrl), "_blank"));
+          .catch(() => {
+            window.open("https://wa.me/?text=" + encodeURIComponent(text + " " + finalUrl), "_blank");
+          });
         return;
       }
 
@@ -271,38 +314,46 @@
     }
 
     document.addEventListener("click", function (event) {
-      const menuToggle = event.target.closest(".guest-menu-toggle");
+      const menuToggle = event.target.closest(".public-menu-toggle");
       if (menuToggle) {
-        const menuId = menuToggle.dataset.menuId;
-        const menu = document.querySelector(`[data-menu-for='${menuId}']`);
-        const isHidden = menu.hidden;
-        closeGuestMenus();
-        menu.hidden = !isHidden;
+        const menu = document.querySelector(`[data-menu-for='${menuToggle.dataset.menuId}']`);
+        const shouldOpen = menu.hidden;
+        closePublicMenus();
+        menu.hidden = !shouldOpen;
         return;
       }
 
-      if (!event.target.closest(".guest-card-menu")) {
-        closeGuestMenus();
+      const dropdownToggle = event.target.closest(".public-filter-toggle");
+      if (dropdownToggle) {
+        const panel = document.querySelector(`[data-dropdown-panel='${dropdownToggle.dataset.dropdownId}']`);
+        const shouldOpen = panel.hidden;
+        closePublicDropdowns();
+        panel.hidden = !shouldOpen;
+        dropdownToggle.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
+        return;
+      }
+
+      if (!event.target.closest(".public-menu-wrap")) {
+        closePublicMenus();
+      }
+
+      if (!event.target.closest(".public-filter-card")) {
+        closePublicDropdowns();
       }
     });
 
-    document.querySelectorAll(".guest-share-btn").forEach((button) => {
+    document.querySelectorAll(".public-share-btn").forEach((button) => {
       button.addEventListener("click", function () {
-        shareGuestPost(button.dataset.shareUrl || "/", button.dataset.shareText || "Check out this post on Delulu");
+        sharePublicPost(button.dataset.shareUrl || "/", button.dataset.shareText || "Check out Delulu");
       });
     });
 
-    document.querySelectorAll(".guest-report-trigger").forEach((button) => {
+    document.querySelectorAll(".public-report-trigger").forEach((button) => {
       button.addEventListener("click", async function () {
         const postId = button.dataset.postId;
-
-        if (!postId) {
-          alert("Please login to create and manage posts.");
-          return;
-        }
-
         const reason = window.prompt("Why are you reporting this post?", "Reported from public feed");
-        if (reason === null) {
+
+        if (!postId || reason === null) {
           return;
         }
 
@@ -322,15 +373,8 @@
           return;
         }
 
-        closeGuestMenus();
+        closePublicMenus();
         alert("Report submitted");
-      });
-    });
-
-    document.querySelectorAll(".guest-dropdown-toggle").forEach((button) => {
-      button.addEventListener("click", function () {
-        const panel = document.querySelector(`[data-dropdown-panel='${button.dataset.dropdownId}']`);
-        panel.classList.toggle("is-collapsed");
       });
     });
   </script>
